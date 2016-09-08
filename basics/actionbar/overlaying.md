@@ -1,28 +1,28 @@
-# ActionBar的覆盖叠加
+# ActionBar的覆蓋疊加
 
-> 编写:[Vincent 4J](http://github.com/vincent4j) - 原文:<http://developer.android.com/training/basics/actionbar/overlaying.html>
+> 編寫:[Vincent 4J](http://github.com/vincent4j) - 原文:<http://developer.android.com/training/basics/actionbar/overlaying.html>
 
-默认情况下，action bar 显示在 activity 窗口的顶部，会稍微地减少其他布局的有效空间。如果在用户交互过程中要隐藏和显示 action bar，可以通过调用 [ActionBar](https://developer.android.com/reference/android/app/ActionBar.html) 中的 <a href="https://developer.android.com/reference/android/app/ActionBar.html#hide()">hide()</a>和<a href="https://developer.android.com/reference/android/app/ActionBar.html#show()">show()</a>来实现。但是，这将导致 activity 基于新尺寸重新计算与绘制布局。
+默認情況下，action bar 顯示在 activity 窗口的頂部，會稍微地減少其他佈局的有效空間。如果在用戶交互過程中要隱藏和顯示 action bar，可以通過調用 [ActionBar](https://developer.android.com/reference/android/app/ActionBar.html) 中的 <a href="https://developer.android.com/reference/android/app/ActionBar.html#hide()">hide()</a>和<a href="https://developer.android.com/reference/android/app/ActionBar.html#show()">show()</a>來實現。但是，這將導致 activity 基於新尺寸重新計算與繪製佈局。
 
-为避免在 action bar 隐藏和显示过程中调整布局的大小，可以为 action bar 启用叠加模式(**overlay mode**)。在叠加模式下，所有可用的空间都会被用来布局就像ActionBar不存在一样，并且 action bar 会叠加在布局之上。这样布局顶部就会有点被遮挡，但当 action bar 隐藏或显示时，系统不再需要调整布局而是无缝过渡。
+為避免在 action bar 隱藏和顯示過程中調整佈局的大小，可以為 action bar 啟用疊加模式(**overlay mode**)。在疊加模式下，所有可用的空間都會被用來佈局就像ActionBar不存在一樣，並且 action bar 會疊加在佈局之上。這樣佈局頂部就會有點被遮擋，但當 action bar 隱藏或顯示時，系統不再需要調整佈局而是無縫過渡。
 
-> **Note**：如果希望 action bar 下面的布局部分可见，可以创建一个背景部分透明的自定义式样的 action bar，如图 1 所示。关于如何定义 action bar 的背景，请查看 [自定义ActionBar的风格](styling.html)。
+> **Note**：如果希望 action bar 下面的佈局部分可見，可以創建一個背景部分透明的自定義式樣的 action bar，如圖 1 所示。關於如何定義 action bar 的背景，請查看 [自定義ActionBar的風格](styling.html)。
 
 ![actionbar-overlay@2x](actionbar-overlay@2x.png)
 
-图 1. 叠加模式下的 gallery action bar
+圖 1. 疊加模式下的 gallery action bar
 
-## 启用叠加模式(Overlay Mode)
+## 啟用疊加模式(Overlay Mode)
 
-要为 action bar 启用叠加模式，需要自定义一个主题，该主题继承于已经存在的 action bar 主题，并设置 `android:windowActionBarOverlay` 属性的值为 `true`。
+要為 action bar 啟用疊加模式，需要自定義一個主題，該主題繼承於已經存在的 action bar 主題，並設置 `android:windowActionBarOverlay` 屬性的值為 `true`。
 
-### 仅支持 Android 3.0 和以上
+### 僅支持 Android 3.0 和以上
 
-如果 [minSdkVersion](https://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min) 为 `11` 或更高，自定义主题必须继承 [Theme.Holo](https://developer.android.com/reference/android/R.style.html#Theme_Holo) 主题（或者其子主题）。例如：
+如果 [minSdkVersion](https://developer.android.com/guide/topics/manifest/uses-sdk-element.html#min) 為 `11` 或更高，自定義主題必須繼承 [Theme.Holo](https://developer.android.com/reference/android/R.style.html#Theme_Holo) 主題（或者其子主題）。例如：
 
 ```xml
 <resources>
-    <!-- 为程序或者活动应用的主题样式 -->
+    <!-- 為程序或者活動應用的主題樣式 -->
     <style name="CustomActionBarTheme"
            parent="@android:style/Theme.Holo">
         <item name="android:windowActionBarOverlay">true</item>
@@ -32,26 +32,26 @@
 
 ###  支持 Android 2.1 和更高
 
-如果为了兼容运行在 Android 3.0 以下版本的设备而使用了 Support 库，自定义主题必须继承 [Theme.AppCompat](https://developer.android.com/reference/android/support/v7/appcompat/R.style.html#Theme_AppCompat) 主题（或者其子主题）。例如：
+如果為了兼容運行在 Android 3.0 以下版本的設備而使用了 Support 庫，自定義主題必須繼承 [Theme.AppCompat](https://developer.android.com/reference/android/support/v7/appcompat/R.style.html#Theme_AppCompat) 主題（或者其子主題）。例如：
 
 ```xml
 <resources>
-    <!-- 为程序或者活动应用的主题样式 -->
+    <!-- 為程序或者活動應用的主題樣式 -->
     <style name="CustomActionBarTheme"
            parent="@android:style/Theme.AppCompat">
         <item name="android:windowActionBarOverlay">true</item>
 
-        <!-- 兼容支持库 -->
+        <!-- 兼容支持庫 -->
         <item name="windowActionBarOverlay">true</item>
     </style>
 </resources>
 ```
 
-注意，该主题包含两种不同的 `windowActionBarOverlay` 式样定义：一个带 `android:` 前缀，另一个不带。带前缀的适用于包含该式样的 Android 系统版本，不带前缀的适用于通过从 Support 库中读取式样的旧版本。
+注意，該主題包含兩種不同的 `windowActionBarOverlay` 式樣定義：一個帶 `android:` 前綴，另一個不帶。帶前綴的適用於包含該式樣的 Android 系統版本，不帶前綴的適用於通過從 Support 庫中讀取式樣的舊版本。
 
-## 指定布局的顶部边距
+## 指定佈局的頂部邊距
 
-当 action bar 启用叠加模式时，它可能会遮挡住本应保持可见状态的布局。为了确保这些布局始终位于 action bar 下部，可以使用 [actionBarSize](https://developer.android.com/reference/android/R.attr.html#actionBarSize) 属性来指定顶部margin或padding的高度来到达。例如：
+當 action bar 啟用疊加模式時，它可能會遮擋住本應保持可見狀態的佈局。為了確保這些佈局始終位於 action bar 下部，可以使用 [actionBarSize](https://developer.android.com/reference/android/R.attr.html#actionBarSize) 屬性來指定頂部margin或padding的高度來到達。例如：
 
 ```xml
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -62,10 +62,10 @@
 </RelativeLayout>
 ```
 
-如果在 action bar 中使用 Support 库，需要移除 `android:` 前缀。例如：
+如果在 action bar 中使用 Support 庫，需要移除 `android:` 前綴。例如：
 
 ```xml
-<!-- 兼容支持库 -->
+<!-- 兼容支持庫 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -74,5 +74,4 @@
 </RelativeLayout>
 ```
 
-在这种情况下，不带前缀的 `?attr/actionBarSize` 适用于包括Android 3.0 和更高的所有版本。
-
+在這種情況下，不帶前綴的 `?attr/actionBarSize` 適用於包括Android 3.0 和更高的所有版本。

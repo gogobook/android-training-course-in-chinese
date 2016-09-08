@@ -1,19 +1,19 @@
-# 建立第一个App
+# 建立第一個App
 
-> 编写:[yuanfentiank789](https://github.com/yuanfentiank789) - 原文:<http://developer.android.com/training/basics/firstapp/index.html>
+> 編寫:[yuanfentiank789](https://github.com/yuanfentiank789) - 原文:<http://developer.android.com/training/basics/firstapp/index.html>
 
-欢迎开始Android应用开发之旅！
+歡迎開始Android應用開發之旅！
 
-本章节我们将学习如何建立我们的第一个Android应用程序。我们将学到如何创建一个Android项目和运行可调试版本的应用程序。此外，我们还将学习到一些Android应用程序设计的基础知识，包括如何创建一个简单的用户界面，以及处理用户输入。
+本章節我們將學習如何建立我們的第一個Android應用程序。我們將學到如何創建一個Android項目和運行可調試版本的應用程序。此外，我們還將學習到一些Android應用程序設計的基礎知識，包括如何創建一個簡單的用戶界面，以及處理用戶輸入。
 
-开始本章节学习之前，我们要确保已经安装了开发环境。我们需要：
+開始本章節學習之前，我們要確保已經安裝了開發環境。我們需要：
 
-1 下载[Android Studio](http://developer.android.com/sdk/index.html).
+1 下載[Android Studio](http://developer.android.com/sdk/index.html).
 
-2 使用[SDK Manager](http://developer.android.com/tools/help/sdk-manager.html)（可以设置g.cn:80作为SDK代理，实现免翻墙更新SDK）下载最新的SDK tools和platforms。
+2 使用[SDK Manager](http://developer.android.com/tools/help/sdk-manager.html)（可以設置g.cn:80作為SDK代理，實現免翻牆更新SDK）下載最新的SDK tools和platforms。
 
-> **Note**：虽然这一系列的培训课程中的大多数章节都预期你会使用Android Studio来进行开发，但某些开发操作还是可以通过SDK tools中提供的命令来实现的。
+> **Note**：雖然這一系列的培訓課程中的大多數章節都預期你會使用Android Studio來進行開發，但某些開發操作還是可以通過SDK tools中提供的命令來實現的。
 
-本章节通过向导的方式来逐步创建一个小型的Android应用，通过这些步骤来教给我们一些Android开发的基本概念，因此你很有必要按照教程的步骤来学习操作。
+本章節通過嚮導的方式來逐步創建一個小型的Android應用，通過這些步驟來教給我們一些Android開發的基本概念，因此你很有必要按照教程的步驟來學習操作。
 
-[开始学习](creating-project.html)
+[開始學習](creating-project.html)

@@ -1,20 +1,20 @@
-# 保存到数据库
+# 保存到資料庫
 
-> 编写:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/data-storage/databases.html>
+> 編寫:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/data-storage/databases.html>
 
-对于重复或者结构化的数据（如联系人信息）等保存到DB是个不错的主意。本课假定读者已经熟悉SQL数据库的常用操作。在Android上可能会使用到的APIs，可以从[android.database.sqlite](http://developer.android.com/reference/android/database/sqlite/package-summary.html)包中找到。
+對於重複或者結構化的數據（如聯繫人信息）等保存到DB是個不錯的主意。本課假定讀者已經熟悉SQL資料庫的常用操作。在Android上可能會使用到的APIs，可以從[android.database.sqlite](http://developer.android.com/reference/android/database/sqlite/package-summary.html)包中找到。
 
-## 定义Schema与Contract
+## 定義Schema與Contract
 
-SQL中一个重要的概念是schema：一种DB结构的正式声明，用于表示database的组成结构。schema是从创建DB的SQL语句中生成的。我们会发现创建一个伴随类（companion class）是很有益的，这个类称为合约类（contract class）,它用一种系统化并且自动生成文档的方式，显示指定了schema样式。
+SQL中一個重要的概念是schema：一種DB結構的正式聲明，用於表示database的組成結構。schema是從創建DB的SQL語句中生成的。我們會發現創建一個伴隨類（companion class）是很有益的，這個類稱為合約類（contract class）,它用一種系統化並且自動生成文檔的方式，顯示指定了schema樣式。
 
-Contract Clsss是一些常量的容器。它定义了例如URIs，表名，列名等。这个contract类允许在同一个包下与其他类使用同样的常量。 它让我们只需要在一个地方修改列名，然后这个列名就可以自动传递给整个code。
+Contract Clsss是一些常量的容器。它定義了例如URIs，表名，列名等。這個contract類允許在同一個包下與其他類使用同樣的常量。 它讓我們只需要在一個地方修改列名，然後這個列名就可以自動傳遞給整個code。
 
-组织contract类的一个好方法是在类的根层级定义一些全局变量，然后为每一个table来创建内部类。
+組織contract類的一個好方法是在類的根層級定義一些全局變量，然後為每一個table來創建內部類。
 
-> **Note：**通过实现 [BaseColumns](http://developer.android.com/reference/android/provider/BaseColumns.html) 的接口，内部类可以继承到一个名为_ID的主键，这个对于Android里面的一些类似cursor adaptor类是很有必要的。这么做不是必须的，但这样能够使得我们的DB与Android的framework能够很好的相容。
+> **Note：**通過實現 [BaseColumns](http://developer.android.com/reference/android/provider/BaseColumns.html) 的介面，內部類可以繼承到一個名為_ID的主鍵，這個對於Android裡面的一些類似cursor adaptor類是很有必要的。這麼做不是必須的，但這樣能夠使得我們的DB與Android的framework能夠很好的相容。
 
-例如，下面的例子定义了表名与该表的列名：
+例如，下面的例子定義了表名與該表的列名：
 
 ```java
 public final class FeedReaderContract {
@@ -33,9 +33,9 @@ public final class FeedReaderContract {
 }
 ```
 
-## 使用SQL Helper创建DB
+## 使用SQL Helper創建DB
 
-定义好了的DB的结构之后，就应该实现那些创建与维护db和table的方法。下面是一些典型的创建与删除table的语句。
+定義好了的DB的結構之後，就應該實現那些創建與維護db和table的方法。下面是一些典型的創建與刪除table的語句。
 
 ```java
 private static final String TEXT_TYPE = " TEXT";
@@ -52,15 +52,15 @@ private static final String SQL_DELETE_ENTRIES =
     "DROP TABLE IF EXISTS " + TABLE_NAME_ENTRIES;
 ```
 
-类似于保存文件到设备的[internal storage](http://developer.android.com/guide/topics/data/data-storage.html#filesInternal) ，Android会将db保存到程序的private的空间。我们的数据是受保护的，因为那些区域默认是私有的，不可被其他程序所访问。
+類似於保存文件到設備的[internal storage](http://developer.android.com/guide/topics/data/data-storage.html#filesInternal) ，Android會將db保存到程序的private的空間。我們的數據是受保護的，因為那些區域默認是私有的，不可被其他程序所訪問。
 
-在[SQLiteOpenHelper](http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html)类中有一些很有用的APIs。当使用这个类来做一些与db有关的操作时，系统会对那些有可能比较耗时的操作（例如创建与更新等）在真正需要的时候才去执行，而不是在app刚启动的时候就去做那些动作。我们所需要做的仅仅是执行<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getWritableDatabase()">getWritableDatabase()</a>或者<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()">getReadableDatabase()</a>.
+在[SQLiteOpenHelper](http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html)類中有一些很有用的APIs。當使用這個類來做一些與db有關的操作時，系統會對那些有可能比較耗時的操作（例如創建與更新等）在真正需要的時候才去執行，而不是在app剛啟動的時候就去做那些動作。我們所需要做的僅僅是執行<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getWritableDatabase()">getWritableDatabase()</a>或者<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#getReadableDatabase()">getReadableDatabase()</a>.
 
-> **Note：**因为那些操作可能是很耗时的，请确保在background thread（AsyncTask or IntentService）里面去执行 getWritableDatabase() 或者 getReadableDatabase() 。
+> **Note：**因為那些操作可能是很耗時的，請確保在background thread（AsyncTask or IntentService）裡面去執行 getWritableDatabase() 或者 getReadableDatabase() 。
 
-为了使用 SQLiteOpenHelper, 需要创建一个子类并重写<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onCreate(android.database.sqlite.SQLiteDatabase)">onCreate()</a>, <a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)">onUpgrade()</a>与<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onOpen(android.database.sqlite.SQLiteDatabase)">onOpen()</a>等callback方法。也许还需要实现<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onDowngrade(android.database.sqlite.SQLiteDatabase, int, int)">onDowngrade()</a>, 但这并不是必需的。
+為了使用 SQLiteOpenHelper, 需要創建一個子類並重寫<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onCreate(android.database.sqlite.SQLiteDatabase)">onCreate()</a>, <a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)">onUpgrade()</a>與<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onOpen(android.database.sqlite.SQLiteDatabase)">onOpen()</a>等callback方法。也許還需要實現<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteOpenHelper.html#onDowngrade(android.database.sqlite.SQLiteDatabase, int, int)">onDowngrade()</a>, 但這並不是必需的。
 
-例如，下面是一个实现了SQLiteOpenHelper 类的例子：
+例如，下面是一個實現了SQLiteOpenHelper 類的例子：
 
 ```java
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
@@ -86,7 +86,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
 }
 ```
 
-为了访问我们的db，需要实例化 SQLiteOpenHelper的子类：
+為了訪問我們的db，需要實例化 SQLiteOpenHelper的子類：
 
 ```java
 FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getContext());
@@ -94,7 +94,7 @@ FeedReaderDbHelper mDbHelper = new FeedReaderDbHelper(getContext());
 
 ## 添加信息到DB
 
-通过传递一个 [ContentValues](http://developer.android.com/reference/android/content/ContentValues.html) 对象到<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html#insert(java.lang.String, java.lang.String, android.content.ContentValues)">insert()</a>方法：
+通過傳遞一個 [ContentValues](http://developer.android.com/reference/android/content/ContentValues.html) 物件到<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html#insert(java.lang.String, java.lang.String, android.content.ContentValues)">insert()</a>方法：
 
 ```java
 // Gets the data repository in write mode
@@ -114,11 +114,11 @@ newRowId = db.insert(
          values);
 ```
 
-`insert()`方法的第一个参数是table名，第二个参数会使得系统自动对那些`ContentValues` 没有提供数据的列填充数据为`null`，如果第二个参数传递的是null，那么系统则不会对那些没有提供数据的列进行填充。
+`insert()`方法的第一個參數是table名，第二個參數會使得系統自動對那些`ContentValues` 沒有提供數據的列填充數據為`null`，如果第二個參數傳遞的是null，那麼系統則不會對那些沒有提供數據的列進行填充。
 
-## 从DB中读取信息
+## 從DB中讀取信息
 
-为了从DB中读取数据，需要使用<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html#query(boolean, java.lang.String, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String, java.lang.String, java.lang.String, java.lang.String)">query()</a>方法，传递需要查询的条件。查询后会返回一个 [Cursor](http://developer.android.com/reference/android/database/Cursor.html) 对象。
+為了從DB中讀取數據，需要使用<a href="http://developer.android.com/reference/android/database/sqlite/SQLiteDatabase.html#query(boolean, java.lang.String, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String, java.lang.String, java.lang.String, java.lang.String)">query()</a>方法，傳遞需要查詢的條件。查詢後會返回一個 [Cursor](http://developer.android.com/reference/android/database/Cursor.html) 物件。
 
 ```java
 SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -146,9 +146,9 @@ Cursor c = db.query(
     sortOrder                                 // The sort order
     );
 ```
-要查询在cursor中的行，使用cursor的其中一个move方法，但必须在读取值之前调用。一般来说应该先调用`moveToFirst()`函数，将读取位置置于结果集最开始的位置。对每一行，我们可以使用cursor的其中一个get方法如`getString()`或`getLong()`获取列的值。对于每一个get方法必须传递想要获取的列的索引位置(index position)，索引位置可以通过调用`getColumnIndex()`或`getColumnIndexOrThrow()`获得。
+要查詢在cursor中的行，使用cursor的其中一個move方法，但必須在讀取值之前調用。一般來說應該先調用`moveToFirst()`函數，將讀取位置置於結果集最開始的位置。對每一行，我們可以使用cursor的其中一個get方法如`getString()`或`getLong()`獲取列的值。對於每一個get方法必須傳遞想要獲取的列的索引位置(index position)，索引位置可以通過調用`getColumnIndex()`或`getColumnIndexOrThrow()`獲得。
 
-下面演示如何从course对象中读取数据信息：
+下面演示如何從course物件中讀取數據信息：
 
 ```java
 cursor.moveToFirst();
@@ -157,13 +157,13 @@ long itemId = cursor.getLong(
 );
 ```
 
-## 删除DB中的信息
+## 刪除DB中的信息
 
-和查询信息一样，删除数据同样需要提供一些删除标准。DB的API提供了一个防止SQL注入的机制来创建查询与删除标准。
+和查詢信息一樣，刪除數據同樣需要提供一些刪除標準。DB的API提供了一個防止SQL注入的機制來創建查詢與刪除標準。
 
-> **SQL Injection：**(*随着B/S模式应用开发的发展，使用这种模式编写应用程序的程序员也越来越多。但由于程序员的水平及经验也参差不齐，相当大一部分程序员在编写代码时没有对用户输入数据的合法性进行判断，使应用程序存在安全隐患。用户可以提交一段数据库查询代码，根据程序返回的结果，获得某些他想得知的数据，这就是所谓的SQL Injection，即SQL注入*)
+> **SQL Injection：**(*隨著B/S模式應用開發的發展，使用這種模式編寫應用程序的程序員也越來越多。但由於程序員的水平及經驗也參差不齊，相當大一部分程序員在編寫代碼時沒有對用戶輸入數據的合法性進行判斷，使應用程序存在安全隱患。用戶可以提交一段資料庫查詢代碼，根據程序返回的結果，獲得某些他想得知的數據，這就是所謂的SQL Injection，即SQL注入*)
 
-该机制把查询语句划分为选项条件与选项参数两部分。条件定义了查询的列的特征，参数用于测试是否符合前面的条款。由于处理的结果不同于通常的SQL语句，这样可以避免SQL注入问题。
+該機制把查詢語句劃分為選項條件與選項參數兩部分。條件定義了查詢的列的特徵，參數用於測試是否符合前面的條款。由於處理的結果不同於通常的SQL語句，這樣可以避免SQL注入問題。
 
 ```java
 // Define 'where' part of query.
@@ -174,11 +174,11 @@ String[] selelectionArgs = { String.valueOf(rowId) };
 db.delete(table_name, mySelection, selectionArgs);
 ```
 
-## 更新数据
+## 更新數據
 
-当需要修改DB中的某些数据时，使用 update() 方法。
+當需要修改DB中的某些數據時，使用 update() 方法。
 
-update结合了插入与删除的语法。
+update結合了插入與刪除的語法。
 
 ```java
 SQLiteDatabase db = mDbHelper.getReadableDatabase();

@@ -1,33 +1,33 @@
 # 添加Action Bar
 
-> 编写:[Vincent 4J](http://github.com/vincent4j) - 原文:<http://developer.android.com/training/basics/actionbar/index.html>
+> 編寫:[Vincent 4J](http://github.com/vincent4j) - 原文:<http://developer.android.com/training/basics/actionbar/index.html>
 
-Action Bar是我们可以为activity实现的最重要的设计元素之一。其提供了多种 UI 特性，可以让我们的 app 与其他 Android app 保持较高的一致性，从而为用户所熟悉。核心的功能包括：
+Action Bar是我們可以為activity實現的最重要的設計元素之一。其提供了多種 UI 特性，可以讓我們的 app 與其他 Android app 保持較高的一致性，從而為用戶所熟悉。核心的功能包括：
 
-* 一个专门的空间用来显示你的app的标识，以及指出目前所处在app的哪个页面。
-* 以一种可预见的方式访问重要的操作（比如搜索）。
-* 支持导航和视图切换（通过Tabs和下拉列表）
+* 一個專門的空間用來顯示你的app的標識，以及指出目前所處在app的哪個頁面。
+* 以一種可預見的方式訪問重要的操作（比如搜索）。
+* 支持導航和視圖切換（通過Tabs和下拉列表）
 
 ![actionbar-actions](actionbar-actions.png)
 
-本章为 action bar 的基本知识提供了一个快速指南。关于 action bar 的更多特性，请查看 [Action Bar](https://developer.android.com/guide/topics/ui/actionbar.html) 指南。
+本章為 action bar 的基本知識提供了一個快速指南。關於 action bar 的更多特性，請查看 [Action Bar](https://developer.android.com/guide/topics/ui/actionbar.html) 指南。
 
 ## Lessons
 
 * [**建立ActionBar**](setting-up.html)
 
-  学习如何为 activity 添加一个基本的 action bar，是仅仅支持 Android 3.0及以上的版本，还是同时也支持至Android 2.1的版本（通过使用 Andriod Support Library）。
+  學習如何為 activity 添加一個基本的 action bar，是僅僅支持 Android 3.0及以上的版本，還是同時也支持至Android 2.1的版本（通過使用 Andriod Support Library）。
 
 
-* [**添加Action按钮**](adding-buttons.html)
+* [**添加Action按鈕**](adding-buttons.html)
 
-  学习如何在 action bar 中添加和响应用户操作。
+  學習如何在 action bar 中添加和響應用戶操作。
 
-* [**ActionBar的风格化**](styling.html)
+* [**ActionBar的風格化**](styling.html)
 
-  学习如何自定义 action bar 的外观。
+  學習如何自定義 action bar 的外觀。
 
 
-* [**ActionBar覆盖叠加**](overlaying.html)
+* [**ActionBar覆蓋疊加**](overlaying.html)
 
-  学习如何在布局上面叠加 action bar，允许 action bar 隐藏时无缝过渡。
+  學習如何在佈局上面疊加 action bar，允許 action bar 隱藏時無縫過渡。

@@ -1,41 +1,41 @@
-# 创建与执行测试用例
+# 創建與執行測試用例
 
-> 编写:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-basic-testing.html>
+> 編寫:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-basic-testing.html>
 
-为了验证应用的布局设计和功能是否符合预期，为应用的每个Activity建立测试非常重要。对于每一个测试，我们需要在测试用例中创建一个个独立的部分，包括测试数据，前提条件和[Activity](http://developer.android.com/reference/android/app/Activity.html)的测试方法。之后我们就可以运行测试并得到测试报告。如果有任何测试没有通过，这表明在我们代码中可能有潜在的缺陷。
+為了驗證應用的佈局設計和功能是否符合預期，為應用的每個Activity建立測試非常重要。對於每一個測試，我們需要在測試用例中創建一個個獨立的部分，包括測試數據，前提條件和[Activity](http://developer.android.com/reference/android/app/Activity.html)的測試方法。之後我們就可以運行測試並得到測試報告。如果有任何測試沒有通過，這表明在我們代碼中可能有潛在的缺陷。
 
-> **注意**: 在测试驱动开发（TDD）方法中, 不推荐先编写大部分或整个应用，并在开发完成后再运行测试。而是应该先编写测试，然后及时编写正确的代码，以通过测试。通过更新测试案例来反映新的功能需求，并以此反复。
+> **注意**: 在測試驅動開發（TDD）方法中, 不推薦先編寫大部分或整個應用，並在開發完成後再運行測試。而是應該先編寫測試，然後及時編寫正確的代碼，以通過測試。通過更新測試案例來反映新的功能需求，並以此反覆。
 
-## 创建一个测试用例
+## 創建一個測試用例
 
-[Activity](http://developer.android.com/reference/android/app/Activity.html)测试都是通过结构化的方式编写的。请务必把测试代码放在一个单独的包内，从而与被测试的代码分开。
+[Activity](http://developer.android.com/reference/android/app/Activity.html)測試都是通過結構化的方式編寫的。請務必把測試代碼放在一個單獨的包內，從而與被測試的代碼分開。
 
-按照惯例，测试包的名称应该遵循与应用包名相同的命名方式，在应用包名后接“.tests”。在创建的测试包中，为我们的测试用例添加Java类。按照惯例，测试用例名称也应遵循要测试的Java或Android的类相同的名称，并增加后缀“Test”。
+按照慣例，測試包的名稱應該遵循與應用包名相同的命名方式，在應用包名後接「.tests」。在創建的測試包中，為我們的測試用例添加Java類。按照慣例，測試用例名稱也應遵循要測試的Java或Android的類相同的名稱，並增加後綴「Test」。
 
-要在Eclipse中创建一个新的测试用例可遵循如下步骤：
+要在Eclipse中創建一個新的測試用例可遵循如下步驟：
 
-a. 在Package Explorer中，右键点击待测试工程的src/文件夹，**New > Package**。
+a. 在Package Explorer中，右鍵點擊待測試工程的src/文件夾，**New > Package**。
 
-b. 设置文件夹名称`<你的包名称>.tests`（比如, `com.example.android.testingfun.tests`）并点击**Finish**。
+b. 設置文件夾名稱`<你的包名稱>.tests`（比如, `com.example.android.testingfun.tests`）並點擊**Finish**。
 
-c. 右键点击创建的测试包，并选择**New > Calss**。
+c. 右鍵點擊創建的測試包，並選擇**New > Calss**。
 
-d. 设置文件名称`<你的Activity名称>Test`（比如, `MyFirstTestActivityTest`），然后点击**Finish**。
+d. 設置文件名稱`<你的Activity名稱>Test`（比如, `MyFirstTestActivityTest`），然後點擊**Finish**。
 
-## 建立测试数据集(Fixture)
+## 建立測試數據集(Fixture)
 
-测试数据集包含运行测试前必须生成的一些对象。要建立测试数据集，可以在我们的测试中覆写<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>和<a href="http://developer.android.com/reference/junit/framework/TestCase.html#tearDown()">tearDown()</a>方法。测试会在运行任何其它测试方法之前自动执行<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法。我们可以用这些方法使得被测试代码与测试初始化和清理是分开的。
+測試數據集包含運行測試前必須生成的一些物件。要建立測試數據集，可以在我們的測試中覆寫<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>和<a href="http://developer.android.com/reference/junit/framework/TestCase.html#tearDown()">tearDown()</a>方法。測試會在運行任何其它測試方法之前自動執行<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法。我們可以用這些方法使得被測試代碼與測試初始化和清理是分開的。
 
-在你的Eclipse中建立测试数据集:
+在你的Eclipse中建立測試數據集:
 
-1 . 在 Package Explorer中双击测试打开之前编写的测试用例，然后修改测试用例使它继承[ActivityTestCase](http://developer.android.com/reference/android/test/ActivityTestCase.html)的子类。比如：
+1 . 在 Package Explorer中雙擊測試打開之前編寫的測試用例，然後修改測試用例使它繼承[ActivityTestCase](http://developer.android.com/reference/android/test/ActivityTestCase.html)的子類。比如：
 
 ```java
 public class MyFirstTestActivityTest
         extends ActivityInstrumentationTestCase2<MyFirstTestActivity> {
 ```
 
-2 . 下一步，给测试用例添加构造函数和setUp()方法，并为我们想测试的Activity添加变量声明。比如:
+2 . 下一步，給測試用例添加構造函數和setUp()方法，並為我們想測試的Activity添加變量聲明。比如:
 
 ```java
 public class MyFirstTestActivityTest
@@ -59,43 +59,43 @@ public class MyFirstTestActivityTest
 }
 ```
 
-构造函数是由测试用的Runner调用，用于初始化测试类的，而<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法是由测试Runner在其他测试方法开始前运行的。
+構造函數是由測試用的Runner調用，用於初始化測試類的，而<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法是由測試Runner在其他測試方法開始前運行的。
 
-通常在`setUp()`方法中，我们应该:
+通常在`setUp()`方法中，我們應該:
 
-* 为`setUp()` 调用父类构造函数，这是JUnit要求的。
-* 初始化测试数据集的状态，具体而言：
-    * 定义保存测试数据及状态的实例变量
-    * 创建并保存正在测试的[Activity](http://developer.android.com/reference/android/app/Activity.html)的引用实例。
-    * 获得想要测试的[Activity](http://developer.android.com/reference/android/app/Activity.html)中任何UI组件的引用。
+* 為`setUp()` 調用父類構造函數，這是JUnit要求的。
+* 初始化測試數據集的狀態，具體而言：
+    * 定義保存測試數據及狀態的實例變量
+    * 創建並保存正在測試的[Activity](http://developer.android.com/reference/android/app/Activity.html)的引用實例。
+    * 獲得想要測試的[Activity](http://developer.android.com/reference/android/app/Activity.html)中任何UI組件的引用。
 
-我们可以使用<a href="http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#getActivity()">getActivity()</a>方法得到正在测试的[Activity](http://developer.android.com/reference/android/app/Activity.html)的引用。
+我們可以使用<a href="http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#getActivity()">getActivity()</a>方法得到正在測試的[Activity](http://developer.android.com/reference/android/app/Activity.html)的引用。
 
-## 增加一个测试前提
+## 增加一個測試前提
 
-我们最好在执行测试之前，检查测试数据集的设置是否正确，以及我们想要测试的对象是否已经正确地初始化。这样，测试就不会因为有测试数据集的设置错误而失败。按照惯例，验证测试数据集的方法被称为`testPreconditions()`。
+我們最好在執行測試之前，檢查測試數據集的設置是否正確，以及我們想要測試的物件是否已經正確地初始化。這樣，測試就不會因為有測試數據集的設置錯誤而失敗。按照慣例，驗證測試數據集的方法被稱為`testPreconditions()`。
 
-例如，我们可能想添加一个像这样的`testPreconditons()`方法:
+例如，我們可能想添加一個像這樣的`testPreconditons()`方法:
 
 ```java
 public void testPreconditions() {
-    assertNotNull(“mFirstTestActivity is null”, mFirstTestActivity);
-    assertNotNull(“mFirstTestText is null”, mFirstTestText);
+    assertNotNull(「mFirstTestActivity is null」, mFirstTestActivity);
+    assertNotNull(「mFirstTestText is null」, mFirstTestText);
 }
 ```
 
-Assertion（断言，译者注）方法源自于Junit[Assert](http://developer.android.com/reference/junit/framework/Assert.html)类。通常，我们可以使用断言来验证某一特定的条件是否是真的。
+Assertion（斷言，譯者注）方法源自於Junit[Assert](http://developer.android.com/reference/junit/framework/Assert.html)類。通常，我們可以使用斷言來驗證某一特定的條件是否是真的。
 
-* 如果条件为假，断言方法抛出一个AssertionFailedError异常，通常会由测试Runner报告。我们可以在断言失败时给断言方法添加一个字符串作为第一个参数从而给出一些上下文详细信息。
-* 如果条件为真，测试通过。
+* 如果條件為假，斷言方法拋出一個AssertionFailedError異常，通常會由測試Runner報告。我們可以在斷言失敗時給斷言方法添加一個字符串作為第一個參數從而給出一些上下文詳細信息。
+* 如果條件為真，測試通過。
 
-在这两种情况下，Runner都会继续运行其它测试用例的测试方法。
+在這兩種情況下，Runner都會繼續運行其它測試用例的測試方法。
 
-## 添加一个测试方法来验证Activity
+## 添加一個測試方法來驗證Activity
 
-下一步，添加一个或多个测试方法来验证[Activity](http://developer.android.com/reference/android/app/Activity.html)布局和功能。
+下一步，添加一個或多個測試方法來驗證[Activity](http://developer.android.com/reference/android/app/Activity.html)佈局和功能。
 
-例如，如果我们的Activity含有一个[TextView](http://developer.android.com/reference/android/widget/TextView.html)，可以添加如下方法来检查它是否有正确的标签文本:
+例如，如果我們的Activity含有一個[TextView](http://developer.android.com/reference/android/widget/TextView.html)，可以添加如下方法來檢查它是否有正確的標籤文本:
 
 ```java
 public void testMyFirstTestTextView_labelText() {
@@ -106,30 +106,30 @@ public void testMyFirstTestTextView_labelText() {
 }
 ```
 
-该 `testMyFirstTestTextView_labelText()` 方法只是简单的检查Layout中[TextView](http://developer.android.com/reference/android/widget/TextView.html)的默认文本是否和`strings.xml`资源中定义的文本一样。
+該 `testMyFirstTestTextView_labelText()` 方法只是簡單的檢查Layout中[TextView](http://developer.android.com/reference/android/widget/TextView.html)的默認文本是否和`strings.xml`資源中定義的文本一樣。
 
->**注意**：当命名测试方法时，我们可以使用下划线将被测试的内容与测试用例区分开。这种风格使得我们可以更容易分清哪些是测试用例。
+>**注意**：當命名測試方法時，我們可以使用下劃線將被測試的內容與測試用例區分開。這種風格使得我們可以更容易分清哪些是測試用例。
 
-做这种类型的字符串比较时，推荐从资源文件中读取预期字符串，而不是在代码中硬性编写字符串做比较。这可以防止当资源文件中的字符串定义被修改时，会影响到测试的效果。
+做這種類型的字符串比較時，推薦從資源文件中讀取預期字符串，而不是在代碼中硬性編寫字符串做比較。這可以防止當資源文件中的字符串定義被修改時，會影響到測試的效果。
 
-为了进行比较，预期的和实际的字符串都要做为<a href="http://developer.android.com/reference/junit/framework/Assert.html#assertEquals(java.lang.String, java.lang.String)">assertEquals()</a>方法的参数。如果值是不一样的，断言将抛出一个[AssertionFailedError](http://developer.android.com/reference/junit/framework/AssertionFailedError.html)异常。
+為了進行比較，預期的和實際的字符串都要做為<a href="http://developer.android.com/reference/junit/framework/Assert.html#assertEquals(java.lang.String, java.lang.String)">assertEquals()</a>方法的參數。如果值是不一樣的，斷言將拋出一個[AssertionFailedError](http://developer.android.com/reference/junit/framework/AssertionFailedError.html)異常。
 
-如果添加了一个`testPreconditions()`方法，我们可以把测试方法放在testPreconditions之后。
+如果添加了一個`testPreconditions()`方法，我們可以把測試方法放在testPreconditions之後。
 
-要参看一个完整的测试案例，可以参考本节示例中的MyFirstTestActivityTest.java。
+要參看一個完整的測試案例，可以參考本節示例中的MyFirstTestActivityTest.java。
 
-##构建和运行测试
+##構建和運行測試
 
-我们可以在Eclipse中的包浏览器（Package Explorer）中运行我们的测试。
+我們可以在Eclipse中的包瀏覽器（Package Explorer）中運行我們的測試。
 
-利用如下步骤构建和运行测试:
+利用如下步驟構建和運行測試:
 
-1. 连接一个Android设备，在设备或模拟器中，打开设置菜单，选择开发者选项并确保启用USB调试。
+1. 連接一個Android設備，在設備或模擬器中，打開設置菜單，選擇開發者選項並確保啟用USB調試。
 
-2. 在包浏览器(Package Explorer)中，右键单击测试类，并选择**Run As > Android Junit Test**。
+2. 在包瀏覽器(Package Explorer)中，右鍵單擊測試類，並選擇**Run As > Android Junit Test**。
 
-3. 在Android设备选择对话框，选择刚才连接的设备，然后单击“确定”。
+3. 在Android設備選擇對話框，選擇剛才連接的設備，然後單擊「確定」。
 
-4. 在JUnit视图，验证测试是否通过,有无错误或失败。
+4. 在JUnit視圖，驗證測試是否通過,有無錯誤或失敗。
 
-本节示例代码[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)
+本節示例代碼[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)

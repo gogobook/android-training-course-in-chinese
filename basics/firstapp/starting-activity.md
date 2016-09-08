@@ -1,14 +1,14 @@
-# 启动另一个Activity
+# 啟動另一個Activity
 
-> 编写:[yuanfentiank789](https://github.com/yuanfentiank789) - 原文:<http://developer.android.com/training/basics/firstapp/starting-activity.html>
+> 編寫:[yuanfentiank789](https://github.com/yuanfentiank789) - 原文:<http://developer.android.com/training/basics/firstapp/starting-activity.html>
 
-在完成上一课(建立简单的用户界面)后，我们已经拥有了显示一个activity（一个界面）的app（应用），该activity包含了一个文本字段和一个按钮。在这节课中，我们将添加一些新的代码到`MyActivity`中，当用户点击发送(Send)按钮时启动一个新的activity。
+在完成上一課(建立簡單的用戶界面)後，我們已經擁有了顯示一個activity（一個界面）的app（應用），該activity包含了一個文本字段和一個按鈕。在這節課中，我們將添加一些新的代碼到`MyActivity`中，當用戶點擊發送(Send)按鈕時啟動一個新的activity。
 
-## 响应Send(发送)按钮
+## 響應Send(發送)按鈕
 
-1 在Android Studio中打开res/layout目录下的content_my.xml 文件.
+1 在Android Studio中打開res/layout目錄下的content_my.xml 文件.
 
-2 为 Button 标签添加[android:onclick](http://developer.android.com/reference/android/view/View.html#attr_android:onClick)属性.
+2 為 Button 標籤添加[android:onclick](http://developer.android.com/reference/android/view/View.html#attr_android:onClick)屬性.
 
 res/layout/content_my.xml
 
@@ -21,11 +21,11 @@ res/layout/content_my.xml
     android:onClick="sendMessage" />
 ```
 
-`android:onclick`属性的值`"sendMessage"`即为用户点击屏幕按钮时触发方法的名字。
+`android:onclick`屬性的值`"sendMessage"`即為用戶點擊屏幕按鈕時觸發方法的名字。
 
-3 打开java/com.mycompany.myfirstapp目录下MyActivity.java 文件.
+3 打開java/com.mycompany.myfirstapp目錄下MyActivity.java 文件.
 
-4 在MyActivity.java 中添加sendMessage() 函数：
+4 在MyActivity.java 中添加sendMessage() 函數：
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -37,36 +37,36 @@ public void sendMessage(View view) {
 
 ```
 
-为使系统能够将该方法（你刚在MyActivity.java中添加的sendMessage方法）与在`android:onClick`属性中提供的方法名字匹配，它们的名字必须一致，特别需要注意的是，这个方法必须满足以下条件：
+為使系統能夠將該方法（你剛在MyActivity.java中添加的sendMessage方法）與在`android:onClick`屬性中提供的方法名字匹配，它們的名字必須一致，特別需要注意的是，這個方法必須滿足以下條件：
 
-* 是public函数
-* 无返回值
-* 参数唯一(为View类型,代表被点击的视图）
+* 是public函數
+* 無返回值
+* 參數唯一(為View類型,代表被點擊的視圖）
 
-接下来，你可以在这个方法中编写读取文本内容，并将该内容传到另一个Activity的代码。
+接下來，你可以在這個方法中編寫讀取文本內容，並將該內容傳到另一個Activity的代碼。
 
-## 构建一个Intent
+## 構建一個Intent
 
->[Intent](http://developer.android.com/reference/android/content/Intent.html)是在不同组件中(比如两个Activity)提供运行时绑定的对象。`Intent`代表一个应用"想去做什么事"，你可以用它做各种各样的任务，不过大部分的时候他们被用来启动另一个Activity。更详细的内容可以参考[Intents and Intent Filters](http://developer.android.com/guide/components/intents-filters.html)。
+>[Intent](http://developer.android.com/reference/android/content/Intent.html)是在不同組件中(比如兩個Activity)提供運行時綁定的物件。`Intent`代表一個應用"想去做什麼事"，你可以用它做各種各樣的任務，不過大部分的時候他們被用來啟動另一個Activity。更詳細的內容可以參考[Intents and Intent Filters](http://developer.android.com/guide/components/intents-filters.html)。
 
-1 在MyActivity.java的`sendMessage()`方法中创建一个`Intent`并启动名为`DisplayMessageActivity`的Activity：
+1 在MyActivity.java的`sendMessage()`方法中創建一個`Intent`並啟動名為`DisplayMessageActivity`的Activity：
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
 ```
 Intent intent = new Intent(this, DisplayMessageActivity.class);
 ```
->**Note**：如果使用的是类似Android Studio的IDE，这里对`DisplayMessageActivity`的引用会报错，因为这个类还不存在；暂时先忽略这个错误，我们很快就要去创建这个类了。
+>**Note**：如果使用的是類似Android Studio的IDE，這裡對`DisplayMessageActivity`的引用會報錯，因為這個類還不存在；暫時先忽略這個錯誤，我們很快就要去創建這個類了。
 
-在这个Intent构造函数中有两个参数：
+在這個Intent構造函數中有兩個參數：
 
-* 第一个参数是[Context](http://developer.android.com/reference/android/content/Context.html)(之所以用`this`是因为当前[Activity](http://developer.android.com/reference/android/app/Activity.html)是`Context`的子类)
+* 第一個參數是[Context](http://developer.android.com/reference/android/content/Context.html)(之所以用`this`是因為當前[Activity](http://developer.android.com/reference/android/app/Activity.html)是`Context`的子類)
 
-* 接受系统发送[Intent](http://developer.android.com/reference/android/content/Intent.html)的应用组件的[Class](http://developer.android.com/reference/java/lang/Class.html)（在这个案例中，指将要被启动的activity）。
+* 接受系統發送[Intent](http://developer.android.com/reference/android/content/Intent.html)的應用組件的[Class](http://developer.android.com/reference/java/lang/Class.html)（在這個案例中，指將要被啟動的activity）。
 
-Android Studio会提示导入[Intent](http://developer.android.com/reference/android/content/Intent.html)类。
+Android Studio會提示導入[Intent](http://developer.android.com/reference/android/content/Intent.html)類。
 
-2 在文件开始处导入[Intent](http://developer.android.com/reference/android/content/Intent.html)类:
+2 在文件開始處導入[Intent](http://developer.android.com/reference/android/content/Intent.html)類:
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -74,9 +74,9 @@ java/com.mycompany.myfirstapp/MyActivity.java
 import android.content.Intent;
 ```
 
- >**Tip:**在Android Studio中，按Alt + Enter 可以导入缺失的类(在Mac中使用option + return)
+ >**Tip:**在Android Studio中，按Alt + Enter 可以導入缺失的類(在Mac中使用option + return)
 
-3 在`sendMessage()`方法里用<a href="http://developer.android.com/reference/android/app/Activity.html#findViewById(int)">findViewById()</a>方法得到[EditText](http://developer.android.com/reference/android/widget/EditText.html)元素.
+3 在`sendMessage()`方法裡用<a href="http://developer.android.com/reference/android/app/Activity.html#findViewById(int)">findViewById()</a>方法得到[EditText](http://developer.android.com/reference/android/widget/EditText.html)元素.
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -87,11 +87,11 @@ public void sendMessage(View view) {
 }
 ```
 
-4 在文件开始处导入EditText类.
+4 在文件開始處導入EditText類.
 
-在Android Studio中，按Alt + Enter 可以导入缺失的类(在Mac中使用option + return)
+在Android Studio中，按Alt + Enter 可以導入缺失的類(在Mac中使用option + return)
 
-5 把EditText的文本内容关联到一个本地 message 变量，并使用putExtra()方法把值传给intent.
+5 把EditText的文本內容關聯到一個本地 message 變量，並使用putExtra()方法把值傳給intent.
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -103,9 +103,9 @@ public void sendMessage(View view) {
   intent.putExtra(EXTRA_MESSAGE, message);
 }
 ```
-[Intent](http://developer.android.com/reference/android/content/Intent.html)可以携带称作 *extras* 的键-值对数据类型。 <a href="http://developer.android.com/reference/android/content/Intent.html#putExtra(java.lang.String, android.os.Bundle)">putExtra()</a>方法把键名作为第一个参数，把值作为第二个参数。
+[Intent](http://developer.android.com/reference/android/content/Intent.html)可以攜帶稱作 *extras* 的鍵-值對數據類型。 <a href="http://developer.android.com/reference/android/content/Intent.html#putExtra(java.lang.String, android.os.Bundle)">putExtra()</a>方法把鍵名作為第一個參數，把值作為第二個參數。
 
-6 在MyActivity class,定义EXTRA_MESSAGE :
+6 在MyActivity class,定義EXTRA_MESSAGE :
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -115,9 +115,9 @@ public class MyActivity extends ActionBarActivity {
     ...
 }
 ```
-为让新启动的activity能查询extra数据。定义key为一个public型的常量，通常使用应用程序包名作为前缀来定义键是很好的做法，这样在应用程序与其他应用程序进行交互时仍可以确保键是唯一的。
+為讓新啟動的activity能查詢extra數據。定義key為一個public型的常量，通常使用應用程序包名作為前綴來定義鍵是很好的做法，這樣在應用程序與其他應用程序進行交互時仍可以確保鍵是唯一的。
 
-7 在sendMessage()函数里，调用startActivity()完成新activity的启动，现在完整的代码应该是下面这个样子：
+7 在sendMessage()函數裡，調用startActivity()完成新activity的啟動，現在完整的代碼應該是下面這個樣子：
 
 java/com.mycompany.myfirstapp/MyActivity.java
 
@@ -132,22 +132,22 @@ public void sendMessage(View view) {
 }
 ```
 
-运行这个方法，系统收到我们的请求后会实例化在`Intent`中指定的`Activity`，现在需要创建一个`DisplayMessageActivity`类使程序能够执行起来。
+運行這個方法，系統收到我們的請求後會實例化在`Intent`中指定的`Activity`，現在需要創建一個`DisplayMessageActivity`類使程序能夠執行起來。
 
 
-## 创建第二个Activity
+## 創建第二個Activity
 
 
-Activity所有子类都必须实现onCreate()方法。创建activity的实例时系统会调用该方式，此时必须用 setContentView()来定义Activity布局，以对Activity进行初始化。
+Activity所有子類都必須實現onCreate()方法。創建activity的實例時系統會調用該方式，此時必須用 setContentView()來定義Activity佈局，以對Activity進行初始化。
 
 
 
-### 使用Android Studio创建新的Activity
+### 使用Android Studio創建新的Activity
 
-使用Android Studio创建的activity会实现一个默认的onCreate()方法.
+使用Android Studio創建的activity會實現一個默認的onCreate()方法.
 
 
-1. 在Android Studio的java 目录, 选择包名 **com.mycompany.myfirstapp**,右键选择 **New > Activity > Blank Activity**.
+1. 在Android Studio的java 目錄, 選擇包名 **com.mycompany.myfirstapp**,右鍵選擇 **New > Activity > Blank Activity**.
 
 2. 在**Choose options**窗口，配置activity：
 <ul>
@@ -161,25 +161,25 @@ Activity所有子类都必须实现onCreate()方法。创建activity的实例时
 
 Package name: com.mycompany.myfirstapp
 </ul>
-点击 **Finish**.
+點擊 **Finish**.
 
 
 ![adt-new-activity](studio-new-activity.png)
 
-3 打开DisplayMessageActivity.java文件，此类已经实现了onCreate()方法，稍后需要更新此方法。
+3 打開DisplayMessageActivity.java文件，此類已經實現了onCreate()方法，稍後需要更新此方法。
 
 
-如果使用 Android Studio开发，现在已经可以点击Send按钮启动这个activity了，但显示的仍然是模板提供的默认内容"Hello world"，稍后修改显示自定义的文本内容。
+如果使用 Android Studio開發，現在已經可以點擊Send按鈕啟動這個activity了，但顯示的仍然是模板提供的默認內容"Hello world"，稍後修改顯示自定義的文本內容。
 
 
 
-### 使用命令行创建activity
+### 使用命令行創建activity
 
-如果使用命令行工具创建activity，按如下步骤操作：
+如果使用命令行工具創建activity，按如下步驟操作：
 
-1 在工程的src/目录下，紧挨着MyActivity.java创建一个新文件DisplayMessageActivity.java.
+1 在工程的src/目錄下，緊挨著MyActivity.java創建一個新文件DisplayMessageActivity.java.
 
-2 写入如下代码：
+2 寫入如下代碼：
 
 
 ```
@@ -227,9 +227,9 @@ public class DisplayMessageActivity extends AppCompatActivity {
 ```
 
 
-> **Note**:如果使用的IDE不是 Android Studio，工程中可能不会包含由`setContentView()`请求的`activity_display_message` layout，但这没关系，因为等下会修改这个方法。
+> **Note**:如果使用的IDE不是 Android Studio，工程中可能不會包含由`setContentView()`請求的`activity_display_message` layout，但這沒關係，因為等下會修改這個方法。
 
-3 把新Activity的标题添加到strings.xml文件:
+3 把新Activity的標題添加到strings.xml文件:
 
 ```
 <resources>
@@ -238,7 +238,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
 </resources>
 ```
 
-4 在 AndroidManifest.xml的Application 标签内为 DisplayMessageActivity添加 <activity\>标签，如下:
+4 在 AndroidManifest.xml的Application 標籤內為 DisplayMessageActivity添加 <activity\>標籤，如下:
 
 ```
 <application ... >
@@ -254,39 +254,39 @@ public class DisplayMessageActivity extends AppCompatActivity {
 </application>
 ```
 
-`android:parentActivityName`属性声明了在应用程序中该Activity逻辑层面的父类Activity的名称。 系统使用此值来实现默认导航操作，比如在Android 4.1（API level 16）或者更高版本中的[Up navigation](http://developer.android.com/design/patterns/navigation.html)。 使用[Support Library](http://developer.android.com/tools/support-library/index.html)，如上所示的[`<meta-data>`](http://developer.android.com/guide/topics/manifest/meta-data-element.html)元素可以为安卓旧版本提供相同功能。
+`android:parentActivityName`屬性聲明了在應用程序中該Activity邏輯層面的父類Activity的名稱。 系統使用此值來實現默認導航操作，比如在Android 4.1（API level 16）或者更高版本中的[Up navigation](http://developer.android.com/design/patterns/navigation.html)。 使用[Support Library](http://developer.android.com/tools/support-library/index.html)，如上所示的[`<meta-data>`](http://developer.android.com/guide/topics/manifest/meta-data-element.html)元素可以為安卓舊版本提供相同功能。
 
- >**Note**:我们的Android SDK应该已经包含了最新的Android Support Library，它包含在ADT插件中。但如果用的是别的IDE，则需要在[ Adding Platforms and Packages ](http://developer.android.com/sdk/installing/adding-packages.html)中安装。当Android Studio中使用模板时，Support Library会自动加入我们的工程中(在Android Dependencies中你以看到相应的JAR文件)。如果不使用Android Studio，就需要手动将Support Library添加到我们的工程中，参考[setting up the Support Library](http://developer.android.com/tools/support-library/setup.html)。
+ >**Note**:我們的Android SDK應該已經包含了最新的Android Support Library，它包含在ADT插件中。但如果用的是別的IDE，則需要在[ Adding Platforms and Packages ](http://developer.android.com/sdk/installing/adding-packages.html)中安裝。當Android Studio中使用模板時，Support Library會自動加入我們的工程中(在Android Dependencies中你以看到相應的JAR文件)。如果不使用Android Studio，就需要手動將Support Library添加到我們的工程中，參考[setting up the Support Library](http://developer.android.com/tools/support-library/setup.html)。
 
 
 
 ## 接收Intent
 
-不管用户导航到哪，每个[Activity](http://developer.android.com/reference/android/app/Activity.html)都是通过[Intent](http://developer.android.com/reference/android/content/Intent.html)被调用的。我们可以通过调用<a href="http://developer.android.com/reference/android/app/Activity.html#getIntent()">getIntent()</a>来获取启动activity的[Intent](http://developer.android.com/reference/android/content/Intent.html)及其包含的数据。
+不管用戶導航到哪，每個[Activity](http://developer.android.com/reference/android/app/Activity.html)都是通過[Intent](http://developer.android.com/reference/android/content/Intent.html)被調用的。我們可以通過調用<a href="http://developer.android.com/reference/android/app/Activity.html#getIntent()">getIntent()</a>來獲取啟動activity的[Intent](http://developer.android.com/reference/android/content/Intent.html)及其包含的數據。
 
-1 编辑java/com.mycompany.myfirstapp目录下的DisplayMessageActivity.java文件.
+1 編輯java/com.mycompany.myfirstapp目錄下的DisplayMessageActivity.java文件.
 
-2 得到intent 并赋值给本地变量.
+2 得到intent 並賦值給本地變量.
 
 ```
 Intent intent = getIntent();
 ```
-3 为Intent导入包.
+3 為Intent導入包.
 
-在Android Studio中，按Alt + Enter 可以导入缺失的类(在Mac中使用option + return).
+在Android Studio中，按Alt + Enter 可以導入缺失的類(在Mac中使用option + return).
 
-4 调用 getStringExtra()提取从 MyActivity 传递过来的消息.
+4 調用 getStringExtra()提取從 MyActivity 傳遞過來的消息.
 
 ```
 String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
 ```
 
 
-## 显示文本
+## 顯示文本
 
-1 在res/layout目录下，编辑文件`content_display_message.xml`.
+1 在res/layout目錄下，編輯文件`content_display_message.xml`.
 
-2 为<RelativeLayout>标签添加id属性，你之后需要用这个id属性来调用这个对象.
+2 為<RelativeLayout>標籤添加id屬性，你之後需要用這個id屬性來調用這個物件.
 
 ```
 < RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -295,32 +295,32 @@ android:id="@+id/content">
 </RelativeLayout>
 ```
 
-3 重新来编辑`DisplayMessageActivity.java`
+3 重新來編輯`DisplayMessageActivity.java`
 
-4 在`onCreate()`方法中创建一个对象`TextView`
+4 在`onCreate()`方法中創建一個物件`TextView`
 
 ```
 TextView textView = new TextView(this);
 ```
 
-5 用`setText()`来设置文本字体大小和内容.
+5 用`setText()`來設置文本字體大小和內容.
 
 ```
 textView.setTextSize(40);
 textView.setText(message);
 ```
-6 将`TextView`加入之前被标记为`R.id.content`的`RelativeLayout`中
+6 將`TextView`加入之前被標記為`R.id.content`的`RelativeLayout`中
 
 ```
 RelativeLayout layout = (RelativeLayout) findViewById(R.id.content);
 layout.addView(textView);
 ```
 
-7 为TextView 导入包.
+7 為TextView 導入包.
 
-在Android Studio中，按Alt + Enter 可以导入缺失的类(在Mac中使用option + return).
+在Android Studio中，按Alt + Enter 可以導入缺失的類(在Mac中使用option + return).
 
-DisplayMessageActivity的完整onCreate()方法应该如下：
+DisplayMessageActivity的完整onCreate()方法應該如下：
 
 
 
@@ -353,8 +353,8 @@ protected void onCreate(Bundle savedInstanceState) {
    layout.addView(textView);
 }```
 
-现在你可以运行app，在文本中输入信息，点击Send(发送)按钮，ok，现在就可以在第二Activity上看到发送过来信息了。如图：
+現在你可以運行app，在文本中輸入信息，點擊Send(發送)按鈕，ok，現在就可以在第二Activity上看到發送過來信息了。如圖：
 
 ![firstapp](firstapp.png)
 
-到此为止，已经创建好我们的第一个Android应用了！
+到此為止，已經創建好我們的第一個Android應用了！

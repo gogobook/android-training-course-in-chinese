@@ -1,34 +1,34 @@
-# 使用Sync Adapter传输数据
+# 使用Sync Adapter傳輸數據
 
-> 编写:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/index.html>
+> 編寫:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/index.html>
 
-如果我们的应用允许 Android 设备和网络服务器之间进行数据同步，那么它无疑将变得更加实用，更加吸引用户的注意。例如，将数据传输到服务器可以实现数据的备份，另一方面，从服务器获取数据可以让用户随时随地都能使用我们的应用。有时候，用户可能会觉得在线编辑他们的数据并将其发送到设备上，会是一件很方便的事情；或者他们有时会希望将收集到的数据上传到一个统一的存储区域中。
+如果我們的應用允許 Android 設備和網絡服務器之間進行數據同步，那麼它無疑將變得更加實用，更加吸引用戶的注意。例如，將數據傳輸到服務器可以實現數據的備份，另一方面，從服務器獲取數據可以讓用戶隨時隨地都能使用我們的應用。有時候，用戶可能會覺得在線編輯他們的數據並將其發送到設備上，會是一件很方便的事情；或者他們有時會希望將收集到的數據上傳到一個統一的存儲區域中。
 
-尽管我们可以设计一套自己的系统来实现应用中的数据传输，但我们也可以考虑一下使用 Android 的同步适配器框架（Android's Sync Adapter Framework）。该框架可以用来帮助管理数据，自动传输数据，以及协调不同应用间的同步问题。当使用这个框架时，我们可以利用它的一些特性，而这些特性可能是我们自己设计的传输方案中所没有的：
+儘管我們可以設計一套自己的系統來實現應用中的數據傳輸，但我們也可以考慮一下使用 Android 的同步適配器框架（Android's Sync Adapter Framework）。該框架可以用來幫助管理數據，自動傳輸數據，以及協調不同應用間的同步問題。當使用這個框架時，我們可以利用它的一些特性，而這些特性可能是我們自己設計的傳輸方案中所沒有的：
 
-**插件架构（Plug-in Architecture）：**
+**插件架構（Plug-in Architecture）：**
 
-允许我们以可调用组件的形式，将传输代码添加到系统中。
+允許我們以可調用組件的形式，將傳輸代碼添加到系統中。
 
-**自动执行（Automated Execution）：**
+**自動執行（Automated Execution）：**
 
-允许我们基于不同的准则自动地执行数据传输，比如：当数据变更时，或者每隔固定一段时间，亦或者每天，来自动执行一次数据传输。另外，系统会自动把当前无法执行的传输添加到一个队列中，并且在合适的时候运行它们。
+允許我們基於不同的準則自動地執行數據傳輸，比如：當數據變更時，或者每隔固定一段時間，亦或者每天，來自動執行一次數據傳輸。另外，系統會自動把當前無法執行的傳輸添加到一個隊列中，並且在合適的時候運行它們。
 
-**自动网络监测（Automated Network Checking）：**
+**自動網絡監測（Automated Network Checking）：**
 
-系统只在有网络连接的时候才会运行数据传输。
+系統只在有網絡連接的時候才會運行數據傳輸。
 
-**提升电池使用效率：**
+**提升電池使用效率：**
 
-允许我们将所有的数据传输任务统一地进行一次性批量传输，这样的话多个数据传输任务会在同一段时间内运行。我们应用的数据传输任务也会和其它应用的传输任务相结合，并一起传输。这样做可以减少系统连接网络的次数，进而减少电量的使用。
+允許我們將所有的數據傳輸任務統一地進行一次性批量傳輸，這樣的話多個數據傳輸任務會在同一段時間內運行。我們應用的數據傳輸任務也會和其它應用的傳輸任務相結合，並一起傳輸。這樣做可以減少系統連接網絡的次數，進而減少電量的使用。
 
-**账户管理和授权：**
+**賬戶管理和授權：**
 
-如果我们的应用需要用户登录授权，那么我们可以将账户管理和授权的功能集成到数据传输组件中。
+如果我們的應用需要用戶登錄授權，那麼我們可以將賬戶管理和授權的功能集成到數據傳輸組件中。
 
-本系列课程将展示如何创建一个 Sync Adapter，如何创建一个绑定了 Sync Adapter 的服务（[Service](http://developer.android.com/reference/android/app/Service.html)），如何提供其它组件来帮助我们将 Sync Adapter 集成到框架中，以及如何通过不同的方法来运行 Sync Adapter。
+本系列課程將展示如何創建一個 Sync Adapter，如何創建一個綁定了 Sync Adapter 的服務（[Service](http://developer.android.com/reference/android/app/Service.html)），如何提供其它組件來幫助我們將 Sync Adapter 集成到框架中，以及如何通過不同的方法來運行 Sync Adapter。
 
-> **Note：**Sync Adapter 是异步执行的，它可以定期且有效地传输数据，但在实时性上一般难以满足要求。如果我们想要实时地传输数据，那么应该在 [AsyncTask](http://developer.android.com/reference/android/os/AsyncTask.html) 或 [IntentService](http://developer.android.com/reference/android/app/IntentService.html) 中完成这一任务。
+> **Note：**Sync Adapter 是異步執行的，它可以定期且有效地傳輸數據，但在實時性上一般難以滿足要求。如果我們想要實時地傳輸數據，那麼應該在 [AsyncTask](http://developer.android.com/reference/android/os/AsyncTask.html) 或 [IntentService](http://developer.android.com/reference/android/app/IntentService.html) 中完成這一任務。
 
 ## Sample Code
 
@@ -36,18 +36,18 @@
 
 ## Lessons
 
-[创建 Stub 授权器](create-authenticator.html)
+[創建 Stub 授權器](create-authenticator.html)
 
-  学习如何在我们的应用中添加一个 Sync Adapter 框架需要的账户处理组件。这节课将展示如何简单地创建一个 Stub Authenticator 组件。
+  學習如何在我們的應用中添加一個 Sync Adapter 框架需要的賬戶處理組件。這節課將展示如何簡單地創建一個 Stub Authenticator 組件。
 
-[创建 Stub Content Provider](create-stub-provider.html)
+[創建 Stub Content Provider](create-stub-provider.html)
 
-  学习如何在我们的应用中添加一个 Sync Adapter 框架需要的 Content Provider 组件。在这节课中，假设我们的应用实际上不需要使用 Content Provider，所以它将教我们如何添加一个 Stub 组件。如果我们的应用已经有了一个 Content Provider 组件，那么可以跳过这节课。
+  學習如何在我們的應用中添加一個 Sync Adapter 框架需要的 Content Provider 組件。在這節課中，假設我們的應用實際上不需要使用 Content Provider，所以它將教我們如何添加一個 Stub 組件。如果我們的應用已經有了一個 Content Provider 組件，那麼可以跳過這節課。
 
-[创建 Sync Adapter](create-sync-adapter.html)
+[創建 Sync Adapter](create-sync-adapter.html)
 
-  学习如何将我们的数据传输代码封装到组件当中，并让其可以被 Sync Adapter 框架自动执行。
+  學習如何將我們的數據傳輸代碼封裝到組件當中，並讓其可以被 Sync Adapter 框架自動執行。
 
-[执行 Sync Adapter](running-sync-adapter.html)
+[執行 Sync Adapter](running-sync-adapter.html)
 
-  学习如何使用 Sync Adapter 框架激活并调度数据传输。
+  學習如何使用 Sync Adapter 框架激活並調度數據傳輸。

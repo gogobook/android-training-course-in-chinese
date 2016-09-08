@@ -1,14 +1,14 @@
-# 使用备份API
+# 使用備份API
 
-> 编写:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/cloudsync/backupapi.html>
+> 編寫:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/cloudsync/backupapi.html>
 
-当用户购买了一台新的设备或者是对当前的设备做了恢复出厂设置的操作，用户会希望在进行初始化设置的时候，Google Play 能够把之前安装过的应用恢复到设备上。默认情况是，用户的这些期望并不会发生，他们之前的设置与数据都会丢失。
+當用戶購買了一台新的設備或者是對當前的設備做了恢復出廠設置的操作，用戶會希望在進行初始化設置的時候，Google Play 能夠把之前安裝過的應用恢復到設備上。默認情況是，用戶的這些期望並不會發生，他們之前的設置與數據都會丟失。
 
-对于一些数据量相对较少的情况（通常少于1MB），例如用户偏好设置、笔记、游戏分数或者是其他的一些状态数据，可以使用 Backup API 来提供一个轻量级的解决方案。这节课会介绍如何将 Backup API 集成到我们的应用当中，以及如何利用 Backup API 将数据恢复到新的设备上。
+對於一些數據量相對較少的情況（通常少於1MB），例如用戶偏好設置、筆記、遊戲分數或者是其他的一些狀態數據，可以使用 Backup API 來提供一個輕量級的解決方案。這節課會介紹如何將 Backup API 集成到我們的應用當中，以及如何利用 Backup API 將數據恢復到新的設備上。
 
-## 注册 Android Backup Service
+## 註冊 Android Backup Service
 
-这节课中所使用的 [Android Backup Service](http://developer.android.com/google/backup/index.html) 需要进行注册。我们可以点击[这里](http://code.google.com/android/backup/signup.html)进行注册。注册成功后，服务器会提供一段类似于下面的代码，我们需要将它添加到应用的 Manifest 文件中:
+這節課中所使用的 [Android Backup Service](http://developer.android.com/google/backup/index.html) 需要進行註冊。我們可以點擊[這裡](http://code.google.com/android/backup/signup.html)進行註冊。註冊成功後，服務器會提供一段類似於下面的代碼，我們需要將它添加到應用的 Manifest 文件中:
 
 <!-- More -->
 
@@ -17,11 +17,11 @@
 android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
 ```
 
-请注意，每一个备份 Key 都只能在特定的包名下工作。如果我们有不同的应用需要使用这个方法进行备份，那么需要分别为他们进行注册。
+請注意，每一個備份 Key 都只能在特定的包名下工作。如果我們有不同的應用需要使用這個方法進行備份，那麼需要分別為他們進行註冊。
 
 ## 配置 Manifest 文件
 
-使用 Android 的备份服务需要将两个额外的内容添加到应用的 Manifest 文件中。首先，声明备份代理的类名，然后添加一段类似上面的代码作为 Application 标签的子标签。假设我们的备份代理叫作 `TheBackupAgent`，下面的例子展示了如何在 Manifest 文件中添加这些信息:
+使用 Android 的備份服務需要將兩個額外的內容添加到應用的 Manifest 文件中。首先，聲明備份代理的類名，然後添加一段類似上面的代碼作為 Application 標籤的子標籤。假設我們的備份代理叫作 `TheBackupAgent`，下面的例子展示了如何在 Manifest 文件中添加這些信息:
 
 ```xml
 <application android:label="MyApp"
@@ -33,13 +33,13 @@ android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
 </application>
 ```
 
-## 编写备份代理
+## 編寫備份代理
 
-创建备份代理最简单的方法是继承 [BackupAgentHelper](http://developer.android.com/reference/android/app/backup/BackupAgentHelper.html)。 创建这个帮助类实际上非常简便。首先创建一个类，其类名和上述 Manifest 文件中声明的类名一致（本例中，它叫做 `TheBackupAgent`），然后继承 `BackupAgentHelper`，之后重写 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onCreate()">onCreate()</a> 方法。
+創建備份代理最簡單的方法是繼承 [BackupAgentHelper](http://developer.android.com/reference/android/app/backup/BackupAgentHelper.html)。 創建這個幫助類實際上非常簡便。首先創建一個類，其類名和上述 Manifest 文件中聲明的類名一致（本例中，它叫做 `TheBackupAgent`），然後繼承 `BackupAgentHelper`，之後重寫 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onCreate()">onCreate()</a> 方法。
 
-在 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onCreate()">onCreate()</a> 中创建一个 [BackupHelper](http://developer.android.com/reference/android/app/backup/BackupHelper.html)。这些帮助类是专门用来备份某些数据的。目前 Android Framework 包含了两种帮助类：[FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 与 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html)。在我们创建一个帮助类并且指向需要备份的数据的时候，仅仅需要使用 <a href="http://developer.android.com/reference/android/app/backup/BackupAgentHelper.html#addHelper(java.lang.String, android.app.backup.BackupHelper)">addHelper()</a> 方法将它们添加到 `BackupAgentHelper` 当中， 之后再增加一个 Key 用来恢复数据。大多数情况下，完整的实现差不多只需要10行左右的代码。
+在 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onCreate()">onCreate()</a> 中創建一個 [BackupHelper](http://developer.android.com/reference/android/app/backup/BackupHelper.html)。這些幫助類是專門用來備份某些數據的。目前 Android Framework 包含了兩種幫助類：[FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 與 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html)。在我們創建一個幫助類並且指向需要備份的數據的時候，僅僅需要使用 <a href="http://developer.android.com/reference/android/app/backup/BackupAgentHelper.html#addHelper(java.lang.String, android.app.backup.BackupHelper)">addHelper()</a> 方法將它們添加到 `BackupAgentHelper` 當中， 之後再增加一個 Key 用來恢複數據。大多數情況下，完整的實現差不多只需要10行左右的代碼。
 
-下面是一个对高分数据进行备份的例子：
+下面是一個對高分數據進行備份的例子：
 
 ```java
  import android.app.backup.BackupAgentHelper;
@@ -62,7 +62,7 @@ android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
 }
 ```
 
-为了使得程序更加灵活，[FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 的构造函数可以带有任意数量的文件名。我们只需简单地通过增加一个额外的参数，就能实现同时对最高分文件与游戏进度文件进行备份，如下所述：
+為了使得程序更加靈活，[FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 的構造函數可以帶有任意數量的文件名。我們只需簡單地通過增加一個額外的參數，就能實現同時對最高分文件與遊戲進度文件進行備份，如下所述：
 
 ```java
     @Override
@@ -72,7 +72,7 @@ android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
     }
 ```
 
-备份用户偏好同样比较简单。和创建 [FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 一样来创建一个 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html)。在这种情况下, 不是添加文件名到构造函数当中，而是添加被应用所使用的 Shared Preference Groups 的名称。下面的例子展示的是，如果高分数据是以 Preference 的形式而非文件的形式存储的，备份代理帮助类应该如何设计：
+備份用戶偏好同樣比較簡單。和創建 [FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 一樣來創建一個 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html)。在這種情況下, 不是添加文件名到構造函數當中，而是添加被應用所使用的 Shared Preference Groups 的名稱。下面的例子展示的是，如果高分數據是以 Preference 的形式而非文件的形式存儲的，備份代理幫助類應該如何設計：
 
 ```java
  import android.app.backup.BackupAgentHelper;
@@ -97,11 +97,11 @@ android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
  }
 ```
 
-虽然我们可以根据喜好增加任意数量的备份帮助类到备份代理帮助类中，但是请记住每一种类型的备份帮助类只需要一个就够了。一个 [FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 可以处理所有我们想要备份的文件, 而一个 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html) 则能够处理所有我们想要备份的 Shared Preference Groups。
+雖然我們可以根據喜好增加任意數量的備份幫助類到備份代理幫助類中，但是請記住每一種類型的備份幫助類只需要一個就夠了。一個 [FileBackupHelper](http://developer.android.com/reference/android/app/backup/FileBackupHelper.html) 可以處理所有我們想要備份的文件, 而一個 [SharedPreferencesBackupHelper](http://developer.android.com/reference/android/app/backup/SharedPreferencesBackupHelper.html) 則能夠處理所有我們想要備份的 Shared Preference Groups。
 
-## 请求备份
+## 請求備份
 
-为了请求一个备份，仅仅需要创建一个 [BackupManager](http://developer.android.com/reference/android/app/backup/BackupManager.html) 实例，然后调用它的 <a href="http://developer.android.com/reference/android/app/backup/BackupManager.html#dataChanged()">dataChanged()</a> 方法即可：
+為了請求一個備份，僅僅需要創建一個 [BackupManager](http://developer.android.com/reference/android/app/backup/BackupManager.html) 實例，然後調用它的 <a href="http://developer.android.com/reference/android/app/backup/BackupManager.html#dataChanged()">dataChanged()</a> 方法即可：
 
 ```java
  import android.app.backup.BackupManager;
@@ -113,8 +113,8 @@ android:value="ABcDe1FGHij2KlmN3oPQRs4TUvW5xYZ" />
  }
 ```
 
-该调用会告知备份管理器即将有数据会被备份到云端。在之后的某个时间点，备份管理器会执行备份代理的 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onBackup(android.os.ParcelFileDescriptor, android.app.backup.BackupDataOutput, android.os.ParcelFileDescriptor)">onBackup()</a> 方法。无论任何时候，只要数据发生了改变，我们都可以去调用它，并且不用担心这样会增加网络的负荷。如果我们在备份正式发生之前请求了两次备份，那么最终备份操作仅仅会出现一次。
+該調用會告知備份管理器即將有數據會被備份到云端。在之後的某個時間點，備份管理器會執行備份代理的 <a href="http://developer.android.com/reference/android/app/backup/BackupAgent.html#onBackup(android.os.ParcelFileDescriptor, android.app.backup.BackupDataOutput, android.os.ParcelFileDescriptor)">onBackup()</a> 方法。無論任何時候，只要數據發生了改變，我們都可以去調用它，並且不用擔心這樣會增加網絡的負荷。如果我們在備份正式發生之前請求了兩次備份，那麼最終備份操作僅僅會出現一次。
 
-## 恢复备份数据
+## 恢復備份數據
 
-一般而言，我们不应该手动去请求恢复，而是应该让应用安装到设备上的时候自动进行恢复。然而，如果确实有必要手动去触发恢复，只需要调用 <a href="http://developer.android.com/reference/android/app/backup/BackupManager.html#requestRestore(android.app.backup.RestoreObserver)">requestRestore()</a> 方法就可以了。
+一般而言，我們不應該手動去請求恢復，而是應該讓應用安裝到設備上的時候自動進行恢復。然而，如果確實有必要手動去觸發恢復，只需要調用 <a href="http://developer.android.com/reference/android/app/backup/BackupManager.html#requestRestore(android.app.backup.RestoreObserver)">requestRestore()</a> 方法就可以了。

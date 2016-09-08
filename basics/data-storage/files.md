@@ -1,34 +1,34 @@
 # 保存到文件
 
-> 编写:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/data-storage/files.html>
+> 編寫:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/data-storage/files.html>
 
-Android使用与其他平台类似的基于磁盘的文件系统(disk-based file systems)。本课程将描述如何在Android文件系统上使用 [File](http://developer.android.com/reference/java/io/File.html) 的读写APIs对Andorid的file system进行读写。
+Android使用與其他平台類似的基於磁盤的文件系統(disk-based file systems)。本課程將描述如何在Android文件系統上使用 [File](http://developer.android.com/reference/java/io/File.html) 的讀寫APIs對Andorid的file system進行讀寫。
 
-File 对象非常适合于流式顺序数据的读写。如图片文件或是网络中交换的数据等。
+File 物件非常適合於流式順序數據的讀寫。如圖片文件或是網絡中交換的數據等。
 
-本课程将会演示如何在app中执行基本的文件相关操作。假定读者已对linux的文件系统及[java.io](http://developer.android.com/reference/java/io/package-summary.html)中标准的I/O APIs有一定认识。
+本課程將會演示如何在app中執行基本的文件相關操作。假定讀者已對linux的文件系統及[java.io](http://developer.android.com/reference/java/io/package-summary.html)中標準的I/O APIs有一定認識。
 
-## 存储在内部还是外部
+## 存儲在內部還是外部
 
-所有的Android设备均有两个文件存储区域："internal" 与 "external" 。 这两个名称来自于早先的Android系统，当时大多设备都内置了不可变的内存（internal storage)及一个类似于SD card（external storage）这样的可卸载的存储部件。之后有一些设备将"internal" 与 "external" 都做成了不可卸载的内置存储，虽然如此，但是这一整块还是从逻辑上有被划分为"internal"与"external"的。只是现在不再以是否可卸载进行区分了。 下面列出了两者的区别：
+所有的Android設備均有兩個文件存儲區域："internal" 與 "external" 。 這兩個名稱來自於早先的Android系統，當時大多設備都內置了不可變的內存（internal storage)及一個類似於SD card（external storage）這樣的可卸載的存儲部件。之後有一些設備將"internal" 與 "external" 都做成了不可卸載的內置存儲，雖然如此，但是這一整塊還是從邏輯上有被劃分為"internal"與"external"的。只是現在不再以是否可卸載進行區分了。 下面列出了兩者的區別：
 
 * **Internal storage:**
-	* 总是可用的
-	* 这里的文件默认只能被我们的app所访问。
-	* 当用户卸载app的时候，系统会把internal内该app相关的文件都清除干净。
-	* Internal是我们在想确保不被用户与其他app所访问的最佳存储区域。
+	* 總是可用的
+	* 這裡的文件默認只能被我們的app所訪問。
+	* 當用戶卸載app的時候，系統會把internal內該app相關的文件都清除乾淨。
+	* Internal是我們在想確保不被用戶與其他app所訪問的最佳存儲區域。
 
 * **External storage:**
-	* 并不总是可用的，因为用户有时会通过USB存储模式挂载外部存储器，当取下挂载的这部分后，就无法对其进行访问了。
-	* 是大家都可以访问的，因此保存在这里的文件可能被其他程序访问。
-	* 当用户卸载我们的app时，系统仅仅会删除external根目录（<a href="http://developer.android.com/reference/android/content/Context.html#getExternalFilesDir(java.lang.String)">getExternalFilesDir()</a>）下的相关文件。
-	* External是在不需要严格的访问权限并且希望这些文件能够被其他app所共享或者是允许用户通过电脑访问时的最佳存储区域。
+	* 並不總是可用的，因為用戶有時會通過USB存儲模式掛載外部存儲器，當取下掛載的這部分後，就無法對其進行訪問了。
+	* 是大家都可以訪問的，因此保存在這裡的文件可能被其他程序訪問。
+	* 當用戶卸載我們的app時，系統僅僅會刪除external根目錄（<a href="http://developer.android.com/reference/android/content/Context.html#getExternalFilesDir(java.lang.String)">getExternalFilesDir()</a>）下的相關文件。
+	* External是在不需要嚴格的訪問權限並且希望這些文件能夠被其他app所共享或者是允許用戶通過電腦訪問時的最佳存儲區域。
 
-> **Tip:** 尽管app是默认被安装到internal storage的，我们还是可以通过在程序的manifest文件中声明[android:installLocation](http://developer.android.com/guide/topics/manifest/manifest-element.html#install) 属性来指定程序安装到external storage。当某个程序的安装文件很大且用户的external storage空间大于internal storage时，用户会倾向于将该程序安装到external storage。更多安装信息见[App Install Location](http://developer.android.com/guide/topics/data/install-location.html)。
+> **Tip:** 儘管app是默認被安裝到internal storage的，我們還是可以通過在程序的manifest文件中聲明[android:installLocation](http://developer.android.com/guide/topics/manifest/manifest-element.html#install) 屬性來指定程序安裝到external storage。當某個程序的安裝文件很大且用戶的external storage空間大於internal storage時，用戶會傾向於將該程序安裝到external storage。更多安裝信息見[App Install Location](http://developer.android.com/guide/topics/data/install-location.html)。
 
-## 获取External存储的权限
+## 獲取External存儲的權限
 
-为了写数据到external storage, 必须在你[manifest文件](http://developer.android.com/guide/topics/manifest/manifest-intro.html)中请求[WRITE_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE)权限：
+為了寫數據到external storage, 必須在你[manifest文件](http://developer.android.com/guide/topics/manifest/manifest-intro.html)中請求[WRITE_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE)權限：
 
 ```xml
 <manifest ...>
@@ -37,31 +37,31 @@ File 对象非常适合于流式顺序数据的读写。如图片文件或是网
 </manifest>
 ```
 
-> **Caution:**目前，所有的apps都可以在不指定某个专门的权限下做**读**external storage的动作。但这在以后的安卓版本中会有所改变。如果我们的app只需要**读**的权限(不是写), 那么将需要声明 [READ_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#READ_EXTERNAL_STORAGE) 权限。为了确保app能持续地正常工作，我们现在在编写程序时就需要声明读权限。
+> **Caution:**目前，所有的apps都可以在不指定某個專門的權限下做**讀**external storage的動作。但這在以後的安卓版本中會有所改變。如果我們的app只需要**讀**的權限(不是寫), 那麼將需要聲明 [READ_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#READ_EXTERNAL_STORAGE) 權限。為了確保app能持續地正常工作，我們現在在編寫程序時就需要聲明讀權限。
 ```xml
 <manifest ...>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     ...
 </manifest>
 ```
-但是，如果我们的程序有声明**[WRITE_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE) **权限，那么就默认有了**读**的权限。
+但是，如果我們的程序有聲明**[WRITE_EXTERNAL_STORAGE](http://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE) **權限，那麼就默認有了**讀**的權限。
 
-对于internal storage，我们不需要声明任何权限，因为程序默认就有读写程序目录下的文件的权限。
+對於internal storage，我們不需要聲明任何權限，因為程序默認就有讀寫程序目錄下的文件的權限。
 
 ## 保存到Internal Storage
 
-当保存文件到internal storage时，可以通过执行下面两个方法之一来获取合适的目录作为 [FILE](http://developer.android.com/reference/java/io/File.html) 的对象：
+當保存文件到internal storage時，可以通過執行下面兩個方法之一來獲取合適的目錄作為 [FILE](http://developer.android.com/reference/java/io/File.html) 的物件：
 
-* <a href="http://developer.android.com/reference/android/content/Context.html#getFilesDir()">getFilesDir()</a> : 返回一个[File](http://developer.android.com/reference/java/io/File.html)，代表了我们app的internal目录。
-* <a href="http://developer.android.com/reference/android/content/Context.html#getCacheDir()">getCacheDir()</a> : 返回一个[File](http://developer.android.com/reference/java/io/File.html)，代表了我们app的internal缓存目录。请确保这个目录下的文件能够在一旦不再需要的时候马上被删除，并对其大小进行合理限制，例如1MB 。系统的内部存储空间不够时，会自行选择删除缓存文件。
+* <a href="http://developer.android.com/reference/android/content/Context.html#getFilesDir()">getFilesDir()</a> : 返回一個[File](http://developer.android.com/reference/java/io/File.html)，代表了我們app的internal目錄。
+* <a href="http://developer.android.com/reference/android/content/Context.html#getCacheDir()">getCacheDir()</a> : 返回一個[File](http://developer.android.com/reference/java/io/File.html)，代表了我們app的internal緩存目錄。請確保這個目錄下的文件能夠在一旦不再需要的時候馬上被刪除，並對其大小進行合理限制，例如1MB 。系統的內部存儲空間不夠時，會自行選擇刪除緩存文件。
 
-可以使用<a href="http://developer.android.com/reference/java/io/File.html#File(java.io.File, java.lang.String)">File()</a> 构造器在那些目录下创建一个新的文件，如下：
+可以使用<a href="http://developer.android.com/reference/java/io/File.html#File(java.io.File, java.lang.String)">File()</a> 構造器在那些目錄下創建一個新的文件，如下：
 
 ```java
 File file = new File(context.getFilesDir(), filename);
 ```
 
-同样，也可以执行<a href="http://developer.android.com/reference/android/content/Context.html#openFileOutput(java.lang.String, int)">openFileOutput()</a> 获取一个 [FileOutputStream](http://developer.android.com/reference/java/io/FileOutputStream.html) 用于写文件到internal目录。如下：
+同樣，也可以執行<a href="http://developer.android.com/reference/android/content/Context.html#openFileOutput(java.lang.String, int)">openFileOutput()</a> 獲取一個 [FileOutputStream](http://developer.android.com/reference/java/io/FileOutputStream.html) 用於寫文件到internal目錄。如下：
 
 ```java
 String filename = "myfile";
@@ -77,7 +77,7 @@ try {
 }
 ```
 
-如果需要缓存一些文件，可以使用<a href="http://developer.android.com/reference/java/io/File.html#createTempFile(java.lang.String, java.lang.String)">createTempFile()</a>。例如：下面的方法从[URL](http://developer.android.com/reference/java/net/URL.html)中抽取了一个文件名，然后再在程序的internal缓存目录下创建了一个以这个文件名命名的文件。
+如果需要緩存一些文件，可以使用<a href="http://developer.android.com/reference/java/io/File.html#createTempFile(java.lang.String, java.lang.String)">createTempFile()</a>。例如：下面的方法從[URL](http://developer.android.com/reference/java/net/URL.html)中抽取了一個文件名，然後再在程序的internal緩存目錄下創建了一個以這個文件名命名的文件。
 
 ```java
  public File getTempFile(Context context, String url) {
@@ -92,11 +92,11 @@ try {
 }
 ```
 
-> **Note:** 我们的app的internal storage 目录以app的包名作为标识存放在Android文件系统的特定目录下[data/data/com.example.xx]。 从技术上讲，如果文件被设置为可读的，那么其他app就可以读取该internal文件。然而，其他app需要知道包名与文件名。若没有设置为可读或者可写，其他app是没有办法读写的。因此我们只要使用了[MODE_PRIVATE](http://developer.android.com/reference/android/content/Context.html#MODE_PRIVATE) ，那么这些文件就不可能被其他app所访问。
+> **Note:** 我們的app的internal storage 目錄以app的包名作為標識存放在Android文件系統的特定目錄下[data/data/com.example.xx]。 從技術上講，如果文件被設置為可讀的，那麼其他app就可以讀取該internal文件。然而，其他app需要知道包名與文件名。若沒有設置為可讀或者可寫，其他app是沒有辦法讀寫的。因此我們只要使用了[MODE_PRIVATE](http://developer.android.com/reference/android/content/Context.html#MODE_PRIVATE) ，那麼這些文件就不可能被其他app所訪問。
 
 ## 保存文件到External Storage
 
-因为external storage可能是不可用的，比如遇到SD卡被拔出等情况时。因此在访问之前应对其可用性进行检查。我们可以通过执行 <a href="http://developer.android.com/reference/android/os/Environment.html#getExternalStorageState()">getExternalStorageState()</a>来查询external storage的状态。若返回状态为[MEDIA_MOUNTED](http://developer.android.com/reference/android/os/Environment.html#MEDIA_MOUNTED), 则可以读写。示例如下：
+因為external storage可能是不可用的，比如遇到SD卡被拔出等情況時。因此在訪問之前應對其可用性進行檢查。我們可以通過執行 <a href="http://developer.android.com/reference/android/os/Environment.html#getExternalStorageState()">getExternalStorageState()</a>來查詢external storage的狀態。若返回狀態為[MEDIA_MOUNTED](http://developer.android.com/reference/android/os/Environment.html#MEDIA_MOUNTED), 則可以讀寫。示例如下：
 
 ```java
  /* Checks if external storage is available for read and write */
@@ -119,12 +119,12 @@ public boolean isExternalStorageReadable() {
 }
 ```
 
-尽管external storage对于用户与其他app是可修改的，我们可能会保存下面两种类型的文件。
+儘管external storage對於用戶與其他app是可修改的，我們可能會保存下面兩種類型的文件。
 
-* **Public files** :这些文件对与用户与其他app来说是public的，当用户卸载我们的app时，这些文件应该保留。例如，那些被我们的app拍摄的图片或者下载的文件。
-* **Private files**: 这些文件完全被我们的app所私有，它们应该在app被卸载时删除。尽管由于存储在external storage，那些文件从技术上而言可以被用户与其他app所访问，但实际上那些文件对于其他app没有任何意义。因此，当用户卸载我们的app时，系统会删除其下的private目录。例如，那些被我们的app下载的缓存文件。
+* **Public files** :這些文件對與用戶與其他app來說是public的，當用戶卸載我們的app時，這些文件應該保留。例如，那些被我們的app拍攝的圖片或者下載的文件。
+* **Private files**: 這些文件完全被我們的app所私有，它們應該在app被卸載時刪除。儘管由於存儲在external storage，那些文件從技術上而言可以被用戶與其他app所訪問，但實際上那些文件對於其他app沒有任何意義。因此，當用戶卸載我們的app時，系統會刪除其下的private目錄。例如，那些被我們的app下載的緩存文件。
 
-想要将文件以public形式保存在external storage中，请使用<a href="http://developer.android.com/reference/android/os/Environment.html#getExternalStoragePublicDirectory(java.lang.String)">getExternalStoragePublicDirectory()</a>方法来获取一个 File 对象，该对象表示存储在external storage的目录。这个方法会需要带有一个特定的参数来指定这些public的文件类型，以便于与其他public文件进行分类。参数类型包括[DIRECTORY_MUSIC](http://developer.android.com/reference/android/os/Environment.html#DIRECTORY_MUSIC) 或者 [DIRECTORY_PICTURES](http://developer.android.com/reference/android/os/Environment.html#DIRECTORY_PICTURES). 如下:
+想要將文件以public形式保存在external storage中，請使用<a href="http://developer.android.com/reference/android/os/Environment.html#getExternalStoragePublicDirectory(java.lang.String)">getExternalStoragePublicDirectory()</a>方法來獲取一個 File 物件，該物件表示存儲在external storage的目錄。這個方法會需要帶有一個特定的參數來指定這些public的文件類型，以便於與其他public文件進行分類。參數類型包括[DIRECTORY_MUSIC](http://developer.android.com/reference/android/os/Environment.html#DIRECTORY_MUSIC) 或者 [DIRECTORY_PICTURES](http://developer.android.com/reference/android/os/Environment.html#DIRECTORY_PICTURES). 如下:
 
 ```java
 public File getAlbumStorageDir(String albumName) {
@@ -138,7 +138,7 @@ public File getAlbumStorageDir(String albumName) {
 }
 ```
 
-想要将文件以private形式保存在external storage中，可以通过执行<a href="http://developer.android.com/reference/android/content/Context.html#getExternalFilesDir(java.lang.String)">getExternalFilesDir()</a> 来获取相应的目录，并且传递一个指示文件类型的参数。每一个以这种方式创建的目录都会被添加到external storage封装我们app目录下的参数文件夹下（如下则是albumName）。这下面的文件会在用户卸载我们的app时被系统删除。如下示例：
+想要將文件以private形式保存在external storage中，可以通過執行<a href="http://developer.android.com/reference/android/content/Context.html#getExternalFilesDir(java.lang.String)">getExternalFilesDir()</a> 來獲取相應的目錄，並且傳遞一個指示文件類型的參數。每一個以這種方式創建的目錄都會被添加到external storage封裝我們app目錄下的參數文件夾下（如下則是albumName）。這下面的文件會在用戶卸載我們的app時被系統刪除。如下示例：
 
 ```java
 public File getAlbumStorageDir(Context context, String albumName) {
@@ -152,35 +152,35 @@ public File getAlbumStorageDir(Context context, String albumName) {
 }
 ```
 
-如果刚开始的时候，没有预定义的子目录存放我们的文件，可以在 getExternalFilesDir()方法中传递`null`. 它会返回app在external storage下的private的根目录。
+如果剛開始的時候，沒有預定義的子目錄存放我們的文件，可以在 getExternalFilesDir()方法中傳遞`null`. 它會返回app在external storage下的private的根目錄。
 
-请记住，getExternalFilesDir() 方法会创建的目录会在app被卸载时被系统删除。如果我们的文件想在app被删除时仍然保留，请使用getExternalStoragePublicDirectory().
+請記住，getExternalFilesDir() 方法會創建的目錄會在app被卸載時被系統刪除。如果我們的文件想在app被刪除時仍然保留，請使用getExternalStoragePublicDirectory().
 
-无论是使用 getExternalStoragePublicDirectory() 来存储可以共享的文件，还是使用 getExternalFilesDir() 来储存那些对于我们的app来说是私有的文件，有一点很重要，那就是要使用那些类似`DIRECTORY_PICTURES` 的API的常量。那些目录类型参数可以确保那些文件被系统正确的对待。例如，那些以`DIRECTORY_RINGTONES` 类型保存的文件就会被系统的media scanner认为是ringtone而不是音乐。
+無論是使用 getExternalStoragePublicDirectory() 來存儲可以共享的文件，還是使用 getExternalFilesDir() 來儲存那些對於我們的app來說是私有的文件，有一點很重要，那就是要使用那些類似`DIRECTORY_PICTURES` 的API的常量。那些目錄類型參數可以確保那些文件被系統正確的對待。例如，那些以`DIRECTORY_RINGTONES` 類型保存的文件就會被系統的media scanner認為是ringtone而不是音樂。
 
-## 查询剩余空间
+## 查詢剩餘空間
 
-如果事先知道想要保存的文件大小，可以通过执行<a href="http://developer.android.com/reference/java/io/File.html#getFreeSpace()">getFreeSpace()</a> or <a href="http://developer.android.com/reference/java/io/File.html#getTotalSpace()">getTotalSpace()</a> 来判断是否有足够的空间来保存文件，从而避免发生[IOException](http://developer.android.com/reference/java/io/IOException.html)。那些方法提供了当前可用的空间还有存储系统的总容量。
+如果事先知道想要保存的文件大小，可以通過執行<a href="http://developer.android.com/reference/java/io/File.html#getFreeSpace()">getFreeSpace()</a> or <a href="http://developer.android.com/reference/java/io/File.html#getTotalSpace()">getTotalSpace()</a> 來判斷是否有足夠的空間來保存文件，從而避免發生[IOException](http://developer.android.com/reference/java/io/IOException.html)。那些方法提供了當前可用的空間還有存儲系統的總容量。
 
-然而，系统并不能保证可以写入通过`getFreeSpace()`查询到的容量文件， 如果查询的剩余容量比我们的文件大小多几MB，或者说文件系统使用率还不足90%，这样则可以继续进行写的操作，否则最好不要写进去。
-> **Note：**并没有强制要求在写文件之前去检查剩余容量。我们可以尝试先做写的动作，然后通过捕获 IOException 。这种做法仅适合于事先并不知道想要写的文件的确切大小。例如，如果在把PNG图片转换成JPEG之前，我们并不知道最终生成的图片大小是多少。
+然而，系統並不能保證可以寫入通過`getFreeSpace()`查詢到的容量文件， 如果查詢的剩餘容量比我們的文件大小多幾MB，或者說文件系統使用率還不足90%，這樣則可以繼續進行寫的操作，否則最好不要寫進去。
+> **Note：**並沒有強制要求在寫文件之前去檢查剩餘容量。我們可以嘗試先做寫的動作，然後通過捕獲 IOException 。這種做法僅適合於事先並不知道想要寫的文件的確切大小。例如，如果在把PNG圖片轉換成JPEG之前，我們並不知道最終生成的圖片大小是多少。
 
-## 删除文件
+## 刪除文件
 
-在不需要使用某些文件的时候应删除它。删除文件最直接的方法是直接执行文件的`delete()`方法。
+在不需要使用某些文件的時候應刪除它。刪除文件最直接的方法是直接執行文件的`delete()`方法。
 
 ```java
 myFile.delete();
 ```
 
-如果文件是保存在internal storage，我们可以通过`Context`来访问并通过执行`deleteFile()`进行删除
+如果文件是保存在internal storage，我們可以通過`Context`來訪問並通過執行`deleteFile()`進行刪除
 
 ```java
 myContext.deleteFile(fileName);
 ```
 
-> **Note:** 当用户卸载我们的app时，android系统会删除以下文件：
+> **Note:** 當用戶卸載我們的app時，android系統會刪除以下文件：
 * 所有保存到internal storage的文件。
 * 所有使用getExternalFilesDir()方式保存在external storage的文件。
 
-> 然而，通常来说，我们应该手动删除所有通过 getCacheDir() 方式创建的缓存文件，以及那些不会再用到的文件。
+> 然而，通常來說，我們應該手動刪除所有通過 getCacheDir() 方式創建的緩存文件，以及那些不會再用到的文件。

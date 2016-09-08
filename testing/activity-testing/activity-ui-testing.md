@@ -1,22 +1,22 @@
-# 测试UI组件
+# 測試UI組件
 
-> 编写:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-ui-testing.html>
+> 編寫:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-ui-testing.html>
 
-通常情况下，[Activity](http://developer.android.com/reference/android/app/Activity.html)，包括用户界面组件（如按钮，复选框，可编辑的文本域，和选框）允许用户与Android应用程序交互。本节介绍如何对一个简单的带有按钮的界面交互测试。我们可以使用相同的步骤来测试其他更复杂的UI组件。
+通常情況下，[Activity](http://developer.android.com/reference/android/app/Activity.html)，包括用戶界面組件（如按鈕，複選框，可編輯的文本域，和選框）允許用戶與Android應用程序交互。本節介紹如何對一個簡單的帶有按鈕的界面交互測試。我們可以使用相同的步驟來測試其他更複雜的UI組件。
 
-> **注意**: 这一节的测试方法叫做白盒测试，因为我们拥有要测试应用程序的源码。Android Instrumentation框架适用于创建应用程序中UI部件的白盒测试。用户界面测试的另一种类型是黑盒测试，即无法得知应用程序源代码的类型。这种类型的测试可以用来测试应用程序如何与其他应用程序，或与系统进行交互。黑盒测试不包括在本节中。了解更多关于如何在你的Android应用程序进行黑盒测试，请阅读[UI Testing guide](http://developer.android.com/tools/testing/testing_ui.html)。
+> **注意**: 這一節的測試方法叫做白盒測試，因為我們擁有要測試應用程序的源碼。Android Instrumentation框架適用於創建應用程序中UI部件的白盒測試。用戶界面測試的另一種類型是黑盒測試，即無法得知應用程序源代碼的類型。這種類型的測試可以用來測試應用程序如何與其他應用程序，或與系統進行交互。黑盒測試不包括在本節中。瞭解更多關於如何在你的Android應用程序進行黑盒測試，請閱讀[UI Testing guide](http://developer.android.com/tools/testing/testing_ui.html)。
 
-要参看完整的测试案例，可以查看本节示例代码中的`ClickFunActivityTest.java`文件。
+要參看完整的測試案例，可以查看本節示例代碼中的`ClickFunActivityTest.java`文件。
 
-## 使用 Instrumentation 建立UI测试
+## 使用 Instrumentation 建立UI測試
 
-当测试拥有UI的Activity时，被测试的Activity在UI线程中运行。然而，测试程序会在程序自己的进程中，单独的一个线程内运行。这意味着，我们的测试程序可以获得UI线程的对象，但是如果它尝试改变UI线程对象的值，会得到`WrongThreadException`错误。
+當測試擁有UI的Activity時，被測試的Activity在UI線程中運行。然而，測試程序會在程序自己的進程中，單獨的一個線程內運行。這意味著，我們的測試程序可以獲得UI線程的物件，但是如果它嘗試改變UI線程物件的值，會得到`WrongThreadException`錯誤。
 
-为了安全地将`Intent`注入到`Activity`，或是在UI线程中执行测试方法，我们可以让测试类继承于[ActivityInstrumentationTestCase2](http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html)。要学习如何在UI线程运行测试方法，请看[在UI线程测试](http://developer.android.com/tools/testing/activity_testing.html#RunOnUIThread)。
+為了安全地將`Intent`注入到`Activity`，或是在UI線程中執行測試方法，我們可以讓測試類繼承於[ActivityInstrumentationTestCase2](http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html)。要學習如何在UI線程運行測試方法，請看[在UI線程測試](http://developer.android.com/tools/testing/activity_testing.html#RunOnUIThread)。
 
-### 建立测试数据集（Fixture）
+### 建立測試數據集（Fixture）
 
-当为UI测试建立测试数据集时，我们应该在<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法中指定[touch mode](http://developer.android.com/guide/topics/ui/ui-events.html#TouchMode)。把touch mode设置为真可以防止在执行编写的测试方法时，人为的UI操作获取到控件的焦点（比如,一个按钮会触发它的点击监听器）。确保在调用<a href="http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#getActivity()">getActivity()</a>方法前调用了[setActivityInitialTouchMode](http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#setActivityInitialTouchMode(boolean))。
+當為UI測試建立測試數據集時，我們應該在<a href="http://developer.android.com/reference/junit/framework/TestCase.html#setUp()">setUp()</a>方法中指定[touch mode](http://developer.android.com/guide/topics/ui/ui-events.html#TouchMode)。把touch mode設置為真可以防止在執行編寫的測試方法時，人為的UI操作獲取到控件的焦點（比如,一個按鈕會觸發它的點擊監聽器）。確保在調用<a href="http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#getActivity()">getActivity()</a>方法前調用了[setActivityInitialTouchMode](http://developer.android.com/reference/android/test/ActivityInstrumentationTestCase2.html#setActivityInitialTouchMode(boolean))。
 
 比如:
 
@@ -40,19 +40,19 @@ public class ClickFunActivityTest
 }
 ```
 
-## 添加测试方法确认UI响应表现
+## 添加測試方法確認UI響應表現
 
-UI测试目标应包括:
+UI測試目標應包括:
 
-*. 检验[Activity](http://developer.android.com/reference/android/app/Activity.html)启动时[Button](http://developer.android.com/reference/android/widget/Button.html)在正确布局位置显示。
-*. 检验[TextView](http://developer.android.com/reference/android/widget/TextView.html)初始化时是隐藏的。
-*. 检验[TextView](http://developer.android.com/reference/android/widget/TextView.html)在[Button](http://developer.android.com/reference/android/widget/Button.html)点击时显示预期的字符串
+*. 檢驗[Activity](http://developer.android.com/reference/android/app/Activity.html)啟動時[Button](http://developer.android.com/reference/android/widget/Button.html)在正確佈局位置顯示。
+*. 檢驗[TextView](http://developer.android.com/reference/android/widget/TextView.html)初始化時是隱藏的。
+*. 檢驗[TextView](http://developer.android.com/reference/android/widget/TextView.html)在[Button](http://developer.android.com/reference/android/widget/Button.html)點擊時顯示預期的字符串
 
-接下来的部分会演示怎样实现上述验证方法
+接下來的部分會演示怎樣實現上述驗證方法
 
-### 验证Button布局参数
+### 驗證Button佈局參數
 
-我们应该像如下添加的测试方法那样。验证[Activity](http://developer.android.com/reference/android/app/Activity.html)中的按钮是否正确显示:
+我們應該像如下添加的測試方法那樣。驗證[Activity](http://developer.android.com/reference/android/app/Activity.html)中的按鈕是否正確顯示:
 
 ```java
 @MediumTest
@@ -69,15 +69,15 @@ public void testClickMeButton_layout() {
 }
 ```
 
-在调用<a href="http://developer.android.com/reference/android/test/ViewAsserts.html#assertOnScreen(android.view.View, android.view.View)">assertOnScreen()</a>方法时，传递根视图以及期望呈现在屏幕上的视图作为参数。如果想呈现的视图没有在根视图中,该方法会抛出一个[AssertionFailedError](http://developer.android.com/reference/junit/framework/AssertionFailedError.html)异常，否则测试通过。
+在調用<a href="http://developer.android.com/reference/android/test/ViewAsserts.html#assertOnScreen(android.view.View, android.view.View)">assertOnScreen()</a>方法時，傳遞根視圖以及期望呈現在屏幕上的視圖作為參數。如果想呈現的視圖沒有在根視圖中,該方法會拋出一個[AssertionFailedError](http://developer.android.com/reference/junit/framework/AssertionFailedError.html)異常，否則測試通過。
 
-我们也可以通过获取一个[ViewGroup.LayoutParams](http://developer.android.com/reference/android/view/ViewGroup.LayoutParams.html)对象的引用验证[Button](http://developer.android.com/reference/android/widget/Button.html)布局是否正确，然后调用`assert`方法验证[Button](http://developer.android.com/reference/android/widget/Button.html)对象的宽高属性值是否与预期值一致。
+我們也可以通過獲取一個[ViewGroup.LayoutParams](http://developer.android.com/reference/android/view/ViewGroup.LayoutParams.html)物件的引用驗證[Button](http://developer.android.com/reference/android/widget/Button.html)佈局是否正確，然後調用`assert`方法驗證[Button](http://developer.android.com/reference/android/widget/Button.html)物件的寬高屬性值是否與預期值一致。
 
-`@MediumTest`注解指定测试是如何归类的（和它的执行时间相关）。要了解更多有关测试的注解，见本节示例。
+`@MediumTest`註解指定測試是如何歸類的（和它的執行時間相關）。要瞭解更多有關測試的註解，見本節示例。
 
-### 验证TextView的布局参数
+### 驗證TextView的佈局參數
 
-可以像这样添加一个测试方法来验证[TextView](http://developer.android.com/reference/android/widget/TextView.html)最初是隐藏在[Activity](http://developer.android.com/reference/android/app/Activity.html)中的:
+可以像這樣添加一個測試方法來驗證[TextView](http://developer.android.com/reference/android/widget/TextView.html)最初是隱藏在[Activity](http://developer.android.com/reference/android/app/Activity.html)中的:
 
 ```java
 @MediumTest
@@ -88,11 +88,11 @@ public void testInfoTextView_layout() {
 }
 ```
 
-我们可以调用`getDecorView()`方法得到一个[Activity](http://developer.android.com/reference/android/app/Activity.html)中修饰试图（Decor View）的引用。要修饰的View在布局层次视图中是最上层的ViewGroup([FrameLayout](http://developer.android.com/reference/android/widget/FrameLayout.html))
+我們可以調用`getDecorView()`方法得到一個[Activity](http://developer.android.com/reference/android/app/Activity.html)中修飾試圖（Decor View）的引用。要修飾的View在佈局層次視圖中是最上層的ViewGroup([FrameLayout](http://developer.android.com/reference/android/widget/FrameLayout.html))
 
-### 验证按钮的行为
+### 驗證按鈕的行為
 
-可以使用如下测试方法来验证当按下按钮时[TextView](http://developer.android.com/reference/android/widget/TextView.html)变得可见:
+可以使用如下測試方法來驗證當按下按鈕時[TextView](http://developer.android.com/reference/android/widget/TextView.html)變得可見:
 
 ```java
 @MediumTest
@@ -104,28 +104,28 @@ public void testClickMeButton_clickButtonAndExpectInfoText() {
 }
 ```
 
-在测试中调用<a href="http://developer.android.com/reference/android/test/TouchUtils.html#clickView(android.test.InstrumentationTestCase, android.view.View)">clickView()</a>可以让我们用编程方式点击一个按钮。我们必须传递正在运行的测试用例的一个引用和要操作按钮的引用。
+在測試中調用<a href="http://developer.android.com/reference/android/test/TouchUtils.html#clickView(android.test.InstrumentationTestCase, android.view.View)">clickView()</a>可以讓我們用編程方式點擊一個按鈕。我們必須傳遞正在運行的測試用例的一個引用和要操作按鈕的引用。
 
-> **注意**:[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)辅助类提供与应用程序交互的方法可以方便进行模拟触摸操作。我们可以使用这些方法来模拟点击，轻敲，或应用程序屏幕拖动View。
+> **注意**:[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)輔助類提供與應用程序交互的方法可以方便進行模擬觸摸操作。我們可以使用這些方法來模擬點擊，輕敲，或應用程序屏幕拖動View。
 
-> **警告**[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)方法的目的是将事件安全地从测试线程发送到UI线程。我们不可以直接在UI线程或任何标注@UIThread的测试方法中使用[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)这样做可能会增加错误线程异常。
+> **警告**[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)方法的目的是將事件安全地從測試線程發送到UI線程。我們不可以直接在UI線程或任何標註@UIThread的測試方法中使用[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)這樣做可能會增加錯誤線程異常。
 
-## 应用测试注解
+## 應用測試註解
 
 [@SmallTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/SmallTest.html)
 
-    标志该测试方法是小型测试的一部分。
+    標誌該測試方法是小型測試的一部分。
 
 [@MediumTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/MediumTest.html)
 
-    标志该测试方法是中等测试的一部分。
+    標誌該測試方法是中等測試的一部分。
 
 [@LargeTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/LargeTest.html)
 
-    标志该测试方法是大型测试的一部分。
+    標誌該測試方法是大型測試的一部分。
 
-通常情况下，如果测试方法只需要几毫秒的时间，那么它应该被标记为[@SmallTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/SmallTest.html)，长时间运行的测试（100毫秒或更多）通常被标记为[@MediumTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/MediumTest.html)或[@LargeTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/LargeTest.html)，这主要取决于测试访问资源在网络上或在本地系统。 可以参看[Android Tools Protip](https://plus.google.com/+AndroidDevelopers/posts/TPy1EeSaSg8)，它可以更好地指导我们使用测试注释
+通常情況下，如果測試方法只需要幾毫秒的時間，那麼它應該被標記為[@SmallTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/SmallTest.html)，長時間運行的測試（100毫秒或更多）通常被標記為[@MediumTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/MediumTest.html)或[@LargeTest](http://developer.android.com/reference/android/test/suitebuilder/annotation/LargeTest.html)，這主要取決於測試訪問資源在網絡上或在本地系統。 可以參看[Android Tools Protip](https://plus.google.com/+AndroidDevelopers/posts/TPy1EeSaSg8)，它可以更好地指導我們使用測試註釋
 
-我们可以创建其它的测试注释来控制测试的组织和运行。要了解更多关于其他注释的信息，见[Annotation](http://developer.android.com/reference/java/lang/annotation/Annotation.html)类参考。
+我們可以創建其它的測試註釋來控制測試的組織和運行。要瞭解更多關於其他註釋的信息，見[Annotation](http://developer.android.com/reference/java/lang/annotation/Annotation.html)類參考。
 
-本节示例代码[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)
+本節示例代碼[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)

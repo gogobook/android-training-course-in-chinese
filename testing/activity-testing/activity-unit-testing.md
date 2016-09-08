@@ -1,18 +1,18 @@
-# 创建单元测试
+# 創建單元測試
 
-> 编写:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-unit-testing.html>
+> 編寫:[huanglizhuo](https://github.com/huanglizhuo) - 原文:<http://developer.android.com/training/activity-testing/activity-unit-testing.html>
 
-[Activity](http://developer.android.com/reference/android/app/Activity.html)单元测试可以快速且独立地（和系统其它部分分离）验证一个[Activity](http://developer.android.com/reference/android/app/Activity.html)的状态以及其与其它组件交互的正确性。一个单元测试通常用来测试代码中最小单位的代码块（可以是一个方法，类，或者组件），而且也不依赖于系统或网络资源。比如说，你可以写一个单元测试去检查Activity是否正确地布局或者是否可以正确地触发一个Intent对象。
+[Activity](http://developer.android.com/reference/android/app/Activity.html)單元測試可以快速且獨立地（和系統其它部分分離）驗證一個[Activity](http://developer.android.com/reference/android/app/Activity.html)的狀態以及其與其它組件交互的正確性。一個單元測試通常用來測試代碼中最小單位的代碼塊（可以是一個方法，類，或者組件），而且也不依賴於系統或網絡資源。比如說，你可以寫一個單元測試去檢查Activity是否正確地佈局或者是否可以正確地觸發一個Intent物件。
 
-单元测试一般不适合测试与系统有复杂交互的UI。我们应该使用如同[测试UI组件](activity-ui-testing.md)所描述的`ActivityInstrumentationTestCase2`来对这类UI交互进行测试。
+單元測試一般不適合測試與系統有複雜交互的UI。我們應該使用如同[測試UI組件](activity-ui-testing.md)所描述的`ActivityInstrumentationTestCase2`來對這類UI交互進行測試。
 
-这节内容将会讲解如何编写一个单元测试来验证一个[Intent](http://developer.android.com/reference/android/content/Intent.html)是否正确地触发了另一个[Activity](http://developer.android.com/reference/android/app/Activity.html)。由于测试是与环境独立的，所以[Intent](http://developer.android.com/reference/android/content/Intent.html)实际上并没有发送给Android系统，但我们可以检查Intent对象的载荷数据是否正确。读者可以参考一下示例代码中的`LaunchActivityTest.java`，将它作为一个例子，了解完备的测试用例是怎么样的。
+這節內容將會講解如何編寫一個單元測試來驗證一個[Intent](http://developer.android.com/reference/android/content/Intent.html)是否正確地觸發了另一個[Activity](http://developer.android.com/reference/android/app/Activity.html)。由於測試是與環境獨立的，所以[Intent](http://developer.android.com/reference/android/content/Intent.html)實際上並沒有發送給Android系統，但我們可以檢查Intent物件的載荷數據是否正確。讀者可以參考一下示例代碼中的`LaunchActivityTest.java`，將它作為一個例子，瞭解完備的測試用例是怎麼樣的。
 
-> **注意**: 如果要针对系统或者外部依赖进行测试，我们可以使用Mocking Framework的Mock类，并把它集成到我们的你的单元测试中。要了解更多关于Android提供的Mocking Framework内容请参考[Mock Object Classes](http://developer.android.com/tools/testing/testing_android.html#MockObjectClasses)。
+> **注意**: 如果要針對系統或者外部依賴進行測試，我們可以使用Mocking Framework的Mock類，並把它集成到我們的你的單元測試中。要瞭解更多關於Android提供的Mocking Framework內容請參考[Mock Object Classes](http://developer.android.com/tools/testing/testing_android.html#MockObjectClasses)。
 
-## 编写一个Android单元测试例子
+## 編寫一個Android單元測試例子
 
-ActiviUnitTestCase类提供对于单个[Activity](http://developer.android.com/reference/android/app/Activity.html)进行分离测试的支持。要创建单元测试，我们的测试类应该继承自`ActiviUnitTestCase`。继承`ActiviUnitTestCase`的Activity不会被Android自动启动。要单独启动Activity，我们需要显式的调用startActivity()方法，并传递一个[Intent](http://developer.android.com/reference/android/content/Intent.html)来启动我们的目标[Activity](http://developer.android.com/reference/android/app/Activity.html)。
+ActiviUnitTestCase類提供對於單個[Activity](http://developer.android.com/reference/android/app/Activity.html)進行分離測試的支持。要創建單元測試，我們的測試類應該繼承自`ActiviUnitTestCase`。繼承`ActiviUnitTestCase`的Activity不會被Android自動啟動。要單獨啟動Activity，我們需要顯式的調用startActivity()方法，並傳遞一個[Intent](http://developer.android.com/reference/android/content/Intent.html)來啟動我們的目標[Activity](http://developer.android.com/reference/android/app/Activity.html)。
 
 例如：
 
@@ -34,16 +34,16 @@ public class LaunchActivityTest
 }
 ```
 
-## 验证另一个Activity的启动
+## 驗證另一個Activity的啟動
 
-我们的单元测试目标可能包括:
+我們的單元測試目標可能包括:
 
-* 验证当Button被按下时，启动的LaunchActivity是否正确。
-* 验证启动的Intent是否包含有效的数据。
+* 驗證當Button被按下時，啟動的LaunchActivity是否正確。
+* 驗證啟動的Intent是否包含有效的數據。
 
-为了验证一个触发[Intent](http://developer.android.com/reference/android/content/Intent.html)的Button的事件，我们可以使用<a href="http://developer.android.com/reference/android/test/ActivityUnitTestCase.html#getStartedActivityIntent()">getStartedActivityIntent()</a>方法。通过使用断言方法，我们可以验证返回的[Intent](http://developer.android.com/reference/android/content/Intent.html)是否为空，以及是否包含了预期的数据来启动下一个Activity。如果两个断言值都是真，那么我们就成功地验证了Activity发送的Intent是正确的了。
+為了驗證一個觸發[Intent](http://developer.android.com/reference/android/content/Intent.html)的Button的事件，我們可以使用<a href="http://developer.android.com/reference/android/test/ActivityUnitTestCase.html#getStartedActivityIntent()">getStartedActivityIntent()</a>方法。通過使用斷言方法，我們可以驗證返回的[Intent](http://developer.android.com/reference/android/content/Intent.html)是否為空，以及是否包含了預期的數據來啟動下一個Activity。如果兩個斷言值都是真，那麼我們就成功地驗證了Activity發送的Intent是正確的了。
 
-我们可以这样实现测试方法:
+我們可以這樣實現測試方法:
 
 ```java
 @MediumTest
@@ -64,7 +64,7 @@ public void testNextActivityWasLaunchedWithIntent() {
 }
 ```
 
-因为LaunchActivity是独立运行的，所以不可以使用[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)库来操作UI。如果要直接进行[Button](http://developer.android.com/reference/android/widget/Button.html)点击，我们可以调用<a href="http://developer.android.com/reference/android/view/View.html#performClick()">perfoemClick()</a>方法。
+因為LaunchActivity是獨立運行的，所以不可以使用[TouchUtils](http://developer.android.com/reference/android/test/TouchUtils.html)庫來操作UI。如果要直接進行[Button](http://developer.android.com/reference/android/widget/Button.html)點擊，我們可以調用<a href="http://developer.android.com/reference/android/view/View.html#performClick()">perfoemClick()</a>方法。
 
-本节示例代码[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)
+本節示例代碼[AndroidTestingFun.zip](http://developer.android.com/shareables/training/AndroidTestingFun.zip)
 

@@ -1,18 +1,18 @@
-# 创建 Stub 授权器
+# 創建 Stub 授權器
 
-> 编写:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/creating-authenticator.html>
+> 編寫:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/creating-authenticator.html>
 
-Sync Adapter 框架假定我们的 Sync Adapter 在同步数据时，设备存储端关联了一个账户，且服务器端需要进行登录验证。因此，我们需要提供一个叫做授权器（Authenticator）的组件作为 Sync Adapter 的一部分。该组件会集成在 Android 账户及认证框架中，并提供一个标准的接口来处理用户凭据，比如登录信息。
+Sync Adapter 框架假定我們的 Sync Adapter 在同步數據時，設備存儲端關聯了一個賬戶，且服務器端需要進行登錄驗證。因此，我們需要提供一個叫做授權器（Authenticator）的組件作為 Sync Adapter 的一部分。該組件會集成在 Android 賬戶及認證框架中，並提供一個標準的介面來處理用戶憑據，比如登錄信息。
 
-即使我们的应用不使用账户，我们仍然需要提供一个授权器组件。在这种情况下，授权器所处理的信息将被忽略，所以我们可以提供一个包含了方法存根（Stub Method）的授权器组件。同时我们需要提供一个绑定 [Service](http://developer.android.com/reference/android/app/Service.html)，来允许 Sync Adapter 框架调用授权器的方法。
+即使我們的應用不使用賬戶，我們仍然需要提供一個授權器組件。在這種情況下，授權器所處理的信息將被忽略，所以我們可以提供一個包含了方法存根（Stub Method）的授權器組件。同時我們需要提供一個綁定 [Service](http://developer.android.com/reference/android/app/Service.html)，來允許 Sync Adapter 框架調用授權器的方法。
 
-这节课将展示如何定义一个能够满足 Sync Adapter 框架要求的 Stub 授权器。如果我们想要提供可以处理用户账户的实际的授权器，可以阅读：[AbstractAccountAuthenticator](http://developer.android.com/reference/android/accounts/AbstractAccountAuthenticator.html)。
+這節課將展示如何定義一個能夠滿足 Sync Adapter 框架要求的 Stub 授權器。如果我們想要提供可以處理用戶賬戶的實際的授權器，可以閱讀：[AbstractAccountAuthenticator](http://developer.android.com/reference/android/accounts/AbstractAccountAuthenticator.html)。
 
-## 添加一个 Stub 授权器组件
+## 添加一個 Stub 授權器組件
 
-要在应用中添加一个 Stub 授权器，首先我们需要创建一个继承 [AbstractAccountAuthenticator](http://developer.android.com/reference/android/accounts/AbstractAccountAuthenticator.html) 的类，在所有需要重写的方法中，我们不进行任何处理，仅返回 null 或者抛出异常。
+要在應用中添加一個 Stub 授權器，首先我們需要創建一個繼承 [AbstractAccountAuthenticator](http://developer.android.com/reference/android/accounts/AbstractAccountAuthenticator.html) 的類，在所有需要重寫的方法中，我們不進行任何處理，僅返回 null 或者拋出異常。
 
-下面的代码片段是一个 Stub 授权器的例子：
+下面的代碼片段是一個 Stub 授權器的例子：
 
 ```java
 /*
@@ -80,13 +80,13 @@ public class Authenticator extends AbstractAccountAuthenticator {
 }
 ```
 
-## 将授权器绑定到框架
+## 將授權器綁定到框架
 
-为了让 Sync Adapter 框架可以访问我们的授权器，我们必须为它创建一个绑定服务。这一服务提供一个 Android Binder 对象，允许框架调用我们的授权器，并且在授权器和框架间传递数据。
+為了讓 Sync Adapter 框架可以訪問我們的授權器，我們必須為它創建一個綁定服務。這一服務提供一個 Android Binder 物件，允許框架調用我們的授權器，並且在授權器和框架間傳遞數據。
 
-因为框架会在它第一次需要访问授权器时启动该 [Service](http://developer.android.com/reference/android/app/Service.html)，所以我们也可以使用该服务来实例化授权器。具体而言，我们需要在服务的 <a href="http://developer.android.com/reference/android/app/Service.html#onCreate()">Service.onCreate()</a> 方法中调用授权器的构造函数。
+因為框架會在它第一次需要訪問授權器時啟動該 [Service](http://developer.android.com/reference/android/app/Service.html)，所以我們也可以使用該服務來實例化授權器。具體而言，我們需要在服務的 <a href="http://developer.android.com/reference/android/app/Service.html#onCreate()">Service.onCreate()</a> 方法中調用授權器的構造函數。
 
-下面的代码样例展示了如何定义绑定 [Service](http://developer.android.com/reference/android/app/Service.html)：
+下面的代碼樣例展示了如何定義綁定 [Service](http://developer.android.com/reference/android/app/Service.html)：
 
 ```java
 /**
@@ -113,31 +113,31 @@ public class AuthenticatorService extends Service {
 }
 ```
 
-## 添加授权器的元数据（Metadata）文件
+## 添加授權器的自觀照資料（Metadata）文件
 
-若要将我们的授权器组件集成到 Sync Adapter 框架和账户框架中，我们需要为这些框架提供带有描述组件信息的元数据。该元数据声明了我们为 Sync Adapter 创建的账户类型以及系统所显示的 UI 元素（如果希望用户可以看到我们创建的账户类型）。在我们的项目目录 `/res/xml/` 下，将元数据声明于一个 XML 文件中。我们可以自己为该文件按命名，通常我们将它命名为 `authenticator.xml`。
+若要將我們的授權器組件集成到 Sync Adapter 框架和賬戶框架中，我們需要為這些框架提供帶有描述組件信息的自觀照資料。該自觀照資料聲明了我們為 Sync Adapter 創建的賬戶類型以及系統所顯示的 UI 元素（如果希望用戶可以看到我們創建的賬戶類型）。在我們的項目目錄 `/res/xml/` 下，將自觀照資料聲明於一個 XML 文件中。我們可以自己為該文件按命名，通常我們將它命名為 `authenticator.xml`。
 
-在这个 XML 文件中，包含了一个 `<account-authenticator>` 标签，它有下列一些属性：
+在這個 XML 文件中，包含了一個 `<account-authenticator>` 標籤，它有下列一些屬性：
 
 **android:accountType**
 
-Sync Adapter 框架要求每一个适配器都有一个域名形式的账户类型。框架会将它作为 Sync Adapter 内部标识的一部分。如果服务端需要登陆，账户类型会和账户一起发送到服务端作为登录凭据的一部分。
+Sync Adapter 框架要求每一個適配器都有一個域名形式的賬戶類型。框架會將它作為 Sync Adapter 內部標識的一部分。如果服務端需要登陸，賬戶類型會和賬戶一起發送到服務端作為登錄憑據的一部分。
 
-如果我们的服务端不需要登录，我们仍然需要提供一个账户类型（该属性的值用我们能控制的一个域名即可）。虽然框架会使用它来管理 Sync Adapter，但该属性的值不会发送到服务端。
+如果我們的服務端不需要登錄，我們仍然需要提供一個賬戶類型（該屬性的值用我們能控制的一個域名即可）。雖然框架會使用它來管理 Sync Adapter，但該屬性的值不會發送到服務端。
 
 **android:icon**
 
-指向一个包含图标的 [Drawable](http://developer.android.com/guide/topics/resources/drawable-resource.html) 资源。如果我们在 `res/xml/syncadapter.xml` 中通过指定 `android:userVisible="true"` 让 Sync Adapter 可见，那么我们必须提供图标资源。它会在系统的设置中的账户（Accounts）这一栏内显示。
+指向一個包含圖標的 [Drawable](http://developer.android.com/guide/topics/resources/drawable-resource.html) 資源。如果我們在 `res/xml/syncadapter.xml` 中通過指定 `android:userVisible="true"` 讓 Sync Adapter 可見，那麼我們必須提供圖標資源。它會在系統的設置中的賬戶（Accounts）這一欄內顯示。
 
 **android:smallIcon**
 
-指向一个包含微小版本图标的 [Drawable](http://developer.android.com/guide/topics/resources/drawable-resource.html) 资源。当屏幕尺寸较小时，这一资源可能会替代 `android:icon` 中所指定的图标资源。
+指向一個包含微小版本圖標的 [Drawable](http://developer.android.com/guide/topics/resources/drawable-resource.html) 資源。當屏幕尺寸較小時，這一資源可能會替代 `android:icon` 中所指定的圖標資源。
 
 **android:label**
 
-指明了用户账户类型的本地化字符串。如果我们在 `res/xml/syncadapter.xml` 中通过指定 `android:userVisible="true"` 让 Sync Adapter 可见，那么我们需要提供该字符串。它会在系统的设置中的账户这一栏内显示，就在我们为授权器定义的图标旁边。
+指明了用戶賬戶類型的本地化字符串。如果我們在 `res/xml/syncadapter.xml` 中通過指定 `android:userVisible="true"` 讓 Sync Adapter 可見，那麼我們需要提供該字符串。它會在系統的設置中的賬戶這一欄內顯示，就在我們為授權器定義的圖標旁邊。
 
-下面的代码样例展示了我们之前为授权器创建的 XML 文件：
+下面的代碼樣例展示了我們之前為授權器創建的 XML 文件：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -149,9 +149,9 @@ Sync Adapter 框架要求每一个适配器都有一个域名形式的账户类�
         android:label="@string/app_name"/>
 ```
 
-## 在 Manifest 文件中声明授权器
+## 在 Manifest 文件中聲明授權器
 
-在之前的步骤中，我们已经创建了一个绑定服务，将授权器和 Sync Adapter 框架连接了起来。为了让系统可以识别该服务，我们需要在 Manifest 文件中添加 [`<service>`](http://developer.android.com/guide/topics/manifest/service-element.html) 标签，将它作为 [`<application>`](http://developer.android.com/guide/topics/manifest/application-element.html) 的子标签：
+在之前的步驟中，我們已經創建了一個綁定服務，將授權器和 Sync Adapter 框架連接了起來。為了讓系統可以識別該服務，我們需要在 Manifest 文件中添加 [`<service>`](http://developer.android.com/guide/topics/manifest/service-element.html) 標籤，將它作為 [`<application>`](http://developer.android.com/guide/topics/manifest/application-element.html) 的子標籤：
 
 ```xml
     <service
@@ -165,8 +165,8 @@ Sync Adapter 框架要求每一个适配器都有一个域名形式的账户类�
     </service>
 ```
 
-[`<intent-filter>`](http://developer.android.com/guide/topics/manifest/intent-filter-element.html) 标签配置了一个可以被 `android.accounts.AccountAuthenticator` 这一 Action 所激活的过滤器，这一 Intent 会在系统要运行授权器时由系统发出。当过滤器被激活后，系统会启动 `AuthenticatorService`，即之前用来封装授权器的 [Service](http://developer.android.com/reference/android/app/Service.html)。
+[`<intent-filter>`](http://developer.android.com/guide/topics/manifest/intent-filter-element.html) 標籤配置了一個可以被 `android.accounts.AccountAuthenticator` 這一 Action 所激活的過濾器，這一 Intent 會在系統要運行授權器時由系統發出。當過濾器被激活後，系統會啟動 `AuthenticatorService`，即之前用來封裝授權器的 [Service](http://developer.android.com/reference/android/app/Service.html)。
 
-[`<meta-data>`](http://developer.android.com/guide/topics/manifest/meta-data-element.html) 标签声明了授权器的元数据。[android:name](http://developer.android.com/guide/topics/manifest/meta-data-element.html#nm) 属性将元数据和授权器框架连接起来。[android:resource](http://developer.android.com/guide/topics/manifest/meta-data-element.html#rsrc) 指定了我们之前所创建的授权器元数据文件的名字。
+[`<meta-data>`](http://developer.android.com/guide/topics/manifest/meta-data-element.html) 標籤聲明了授權器的自觀照資料。[android:name](http://developer.android.com/guide/topics/manifest/meta-data-element.html#nm) 屬性將自觀照資料和授權器框架連接起來。[android:resource](http://developer.android.com/guide/topics/manifest/meta-data-element.html#rsrc) 指定了我們之前所創建的授權器自觀照資料文件的名字。
 
-除了授权器之外，Sync Adapter 框架也需要一个 Content Provider。如果我们的应用并没有使用 Content Provider，那么可以阅读下一节课程学习如何创建一个 Stub Content Provider；如果我们的应用已经使用了 ContentProvider，可以直接阅读：[创建 Sync Adapter](create-sync-adapter.html)。
+除了授權器之外，Sync Adapter 框架也需要一個 Content Provider。如果我們的應用並沒有使用 Content Provider，那麼可以閱讀下一節課程學習如何創建一個 Stub Content Provider；如果我們的應用已經使用了 ContentProvider，可以直接閱讀：[創建 Sync Adapter](create-sync-adapter.html)。

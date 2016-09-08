@@ -1,12 +1,12 @@
-# 管理Activity的生命周期
+# 管理Activity的生命週期
 
 > 原文:<http://developer.android.com/training/basics/activity-lifecycle/index.html>
 
-当用户导航、退出和返回您的应用时，应用中的 [Activity](http://developer.android.com/reference/android/app/Activity.html) 实例将在其生命周期中转换不同状态。 例如，当您的Activity初次开始时，它将出现在系统前台并接收用户焦点。 在这个过程中，Android 系统会对Activity调用一系列生命周期方法，通过这些方法，您可以设置用户界面和其他组件。 如果用户执行开始另一Activity或切换至另一应用的操作，当其进入后台（在其中Activity不再可见，但实例及其状态完整保留），系统会对您的Activity调用另外一系列生命周期方法。
+當用戶導航、退出和返回您的應用時，應用中的 [Activity](http://developer.android.com/reference/android/app/Activity.html) 實例將在其生命週期中轉換不同狀態。 例如，當您的Activity初次開始時，它將出現在系統前台並接收用戶焦點。 在這個過程中，Android 系統會對Activity調用一系列生命週期方法，通過這些方法，您可以設置用戶界面和其他組件。 如果用戶執行開始另一Activity或切換至另一應用的操作，當其進入後台（在其中Activity不再可見，但實例及其狀態完整保留），系統會對您的Activity調用另外一系列生命週期方法。
 
-在生命周期回调方法内，您可以声明用户离开和再次进入Activity时的Activity行为。比如，如果您正构建流视频播放器，当用户切换至另一应用时，您可能要暂停视频或终止网络连接。当用户返回时，您可以重新连接网络并允许用户从同一位置继续播放视频。
+在生命週期回調方法內，您可以聲明用戶離開和再次進入Activity時的Activity行為。比如，如果您正構建流視頻播放器，當用戶切換至另一應用時，您可能要暫停視頻或終止網絡連接。當用戶返回時，您可以重新連接網絡並允許用戶從同一位置繼續播放視頻。
 
-本课讲述每个 [Activity](http://developer.android.com/reference/android/app/Activity.html) 实例接收的重要生命周期回调方法以及您如何使用这些方法以使您的Activity按照用户预期进行并且当您的Activity不需要它们时不会消耗系统资源。
+本課講述每個 [Activity](http://developer.android.com/reference/android/app/Activity.html) 實例接收的重要生命週期回調方法以及您如何使用這些方法以使您的Activity按照用戶預期進行並且當您的Activity不需要它們時不會消耗系統資源。
 
 **完整的Demo示例**：[ActivityLifecycle.zip](http://developer.android.com/shareables/training/ActivityLifecycle.zip)
 
@@ -14,21 +14,21 @@
 
 ## Lessons
 
-* [**启动与销毁Activity**](starting.html)
+* [**啟動與銷毀Activity**](starting.html)
 
-  学习有关Activity生命周期、用户如何启动您的应用以及如何执行基本Activity创建操作的基础知识。
-
-
-* [**暂停与恢复Activity**](pausing.html)
-
-  学习Activity暂停时（部分隐藏）和继续时的情况以及您应在这些状态变化期间执行的操作。
+  學習有關Activity生命週期、用戶如何啟動您的應用以及如何執行基本Activity創建操作的基礎知識。
 
 
-* [**停止与重启Activity**](stopping.html)
+* [**暫停與恢復Activity**](pausing.html)
 
-  学习用户完全离开您的Activity并返回到该Activity时发生的情况。
+  學習Activity暫停時（部分隱藏）和繼續時的情況以及您應在這些狀態變化期間執行的操作。
 
 
-* [**重新创建Activity**](recreating.html)
+* [**停止與重啟Activity**](stopping.html)
 
-  学习您的Activity被销毁时的情况以及您如何能够根据需要重新构建Activity。
+  學習用戶完全離開您的Activity並返回到該Activity時發生的情況。
+
+
+* [**重新創建Activity**](recreating.html)
+
+  學習您的Activity被銷毀時的情況以及您如何能夠根據需要重新構建Activity。

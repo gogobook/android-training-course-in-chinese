@@ -1,49 +1,49 @@
-# 启动与销毁Activity
+# 啟動與銷毀Activity
 
-> 编写:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/activity-lifecycle/starting.html>
+> 編寫:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/basics/activity-lifecycle/starting.html>
 
-不同于使用 `main()` 方法启动应用的其他编程范例，Android 系统会通过调用对应于其生命周期中特定阶段的特定回调方法在 Activity 实例中启动代码。 有一系列可启动Activity的回调方法，以及一系列可分解Activity的回调方法。
+不同於使用 `main()` 方法啟動應用的其他編程範例，Android 系統會通過調用對應於其生命週期中特定階段的特定回調方法在 Activity 實例中啟動代碼。 有一系列可啟動Activity的回調方法，以及一系列可分解Activity的回調方法。
 
-本课程概述了最重要的生命周期方法，并向您展示如何处理创建Activity新实例的第一个生命周期回调。
+本課程概述了最重要的生命週期方法，並向您展示如何處理創建Activity新實例的第一個生命週期回調。
 
-## 了解生命周期回调
+## 瞭解生命週期回調
 
-在Activity的生命周期中，系统会按类似于阶梯金字塔的顺序调用一组核心的生命周期方法。也就是说，Activity生命周期的每个阶段就是金字塔上的一阶。 当系统创建新Activity实例时，每个回调方法会将Activity状态向顶端移动一阶。金字塔的顶端是Activity在前台运行并且用户可以与其交互的时间点。
+在Activity的生命週期中，系統會按類似於階梯金字塔的順序調用一組核心的生命週期方法。也就是說，Activity生命週期的每個階段就是金字塔上的一階。 當系統創建新Activity實例時，每個回調方法會將Activity狀態向頂端移動一階。金字塔的頂端是Activity在前台運行並且用戶可以與其交互的時間點。
 
 <!-- more -->
 
-当用户开始离开Activity时，系统会调用其他方法在金字塔中将Activity状态下移，从而销毁Activity。在有些情况下，Activity将只在金字塔中部分下移并等待（比如，当用户切换到其他应用时），Activity可从该点开始移回顶端（如果用户返回到该Activity），并在用户停止的位置继续。
+當用戶開始離開Activity時，系統會調用其他方法在金字塔中將Activity狀態下移，從而銷毀Activity。在有些情況下，Activity將只在金字塔中部分下移並等待（比如，當用戶切換到其他應用時），Activity可從該點開始移回頂端（如果用戶返回到該Activity），並在用戶停止的位置繼續。
 
 ![basic-lifecycle](basic-lifecycle.png)
 
-**图 1.**简化的Activity生命周期图示，以阶梯金字塔表示。此图示显示，对于用于将Activity朝顶端的“继续”状态移动一阶的每个回调，有一种将Activity下移一阶的回调方法。Activity还可以从“暂停”和“停止”状态回到继续状态。*
+**圖 1.**簡化的Activity生命週期圖示，以階梯金字塔表示。此圖示顯示，對於用於將Activity朝頂端的「繼續」狀態移動一階的每個回調，有一種將Activity下移一階的回調方法。Activity還可以從「暫停」和「停止」狀態回到繼續狀態。*
 
-根据Activity的复杂程度，您可能不需要实现所有生命周期方法。但是，了解每个方法并实现确保您的应用按照用户期望的方式运行的方法非常重要。正确实现您的Activity生命周期方法可确保您的应用按照以下几种方式良好运行，包括：
+根據Activity的複雜程度，您可能不需要實現所有生命週期方法。但是，瞭解每個方法並實現確保您的應用按照用戶期望的方式運行的方法非常重要。正確實現您的Activity生命週期方法可確保您的應用按照以下幾種方式良好運行，包括：
 
-* 如果用户在使用您的应用时接听来电或切换到另一个应用，它不会崩溃。
-* 在用户未主动使用它时不会消耗宝贵的系统资源。
-* 如果用户离开您的应用并稍后返回，不会丢失用户的进度。
-* 当屏幕在横向和纵向之间旋转时，不会崩溃或丢失用户的进度。
+* 如果用戶在使用您的應用時接聽來電或切換到另一個應用，它不會崩潰。
+* 在用戶未主動使用它時不會消耗寶貴的系統資源。
+* 如果用戶離開您的應用並稍後返回，不會丟失用戶的進度。
+* 當屏幕在橫向和縱向之間旋轉時，不會崩潰或丟失用戶的進度。
 
-正如您将要在以下课程中要学习的，有Activity会在图 1 所示不同状态之间过渡的几种情况。但是，这些状态中只有三种可以是静态。 也就是说，Activity只能在三种状态之一下存在很长时间。
+正如您將要在以下課程中要學習的，有Activity會在圖 1 所示不同狀態之間過渡的幾種情況。但是，這些狀態中只有三種可以是靜態。 也就是說，Activity只能在三種狀態之一下存在很長時間。
 
-  * **Resumed**：在这种状态下，Activity处于前台，且用户可以与其交互。（有时也称为“运行”状态。）
-  * **Paused**：在这种状态下，Activity被在前台中处于半透明状态或者未覆盖整个屏幕的另一个Activity—部分阻挡。暂停的Activity不会接收用户输入并且无法执行任何代码。
-  * **Stopped**：在这种状态下，Activity被完全隐藏并且对用户不可见；它被视为处于后台。停止时，Activity实例及其诸如成员变量等所有状态信息将保留，但它无法执行任何代码。
+  * **Resumed**：在這種狀態下，Activity處於前台，且用戶可以與其交互。（有時也稱為「運行」狀態。）
+  * **Paused**：在這種狀態下，Activity被在前台中處於半透明狀態或者未覆蓋整個屏幕的另一個Activity—部分阻擋。暫停的Activity不會接收用戶輸入並且無法執行任何代碼。
+  * **Stopped**：在這種狀態下，Activity被完全隱藏並且對用戶不可見；它被視為處於後台。停止時，Activity實例及其諸如成員變量等所有狀態信息將保留，但它無法執行任何代碼。
 
-其他状态（“创建”和“开始”）是瞬态，
+其他狀態（「創建」和「開始」）是瞬態，
 
-其它状态 (**Created**与**Started**)都是短暂的瞬态，系统会通过调用下一个生命周期回调方法从这些状态快速移到下一个状态。 也就是说，在系统调用 [onCreate()](http://developer.android.com/reference/android/app/Activity.html#onCreate(android.os.Bundle)) 之后，它会快速调用 [onStart()](http://developer.android.com/reference/android/app/Activity.html#onStart())，紧接着快速调用 [onResume()](http://developer.android.com/reference/android/app/Activity.html#onResume())。
+其它狀態 (**Created**與**Started**)都是短暫的瞬態，系統會通過調用下一個生命週期回調方法從這些狀態快速移到下一個狀態。 也就是說，在系統調用 [onCreate()](http://developer.android.com/reference/android/app/Activity.html#onCreate(android.os.Bundle)) 之後，它會快速調用 [onStart()](http://developer.android.com/reference/android/app/Activity.html#onStart())，緊接著快速調用 [onResume()](http://developer.android.com/reference/android/app/Activity.html#onResume())。
 
-基本生命周期部分到此为止。现在，您将开始学习特定生命周期行为的一些知识。
+基本生命週期部分到此為止。現在，您將開始學習特定生命週期行為的一些知識。
 
-## 指定程序首次启动的Activity
+## 指定程序首次啟動的Activity
 
-当用户从主界面点击程序图标时，系统会调用app中被声明为"launcher" (or "main") activity中的onCreate()方法。这个Activity被用来当作程序的主要进入点。
+當用戶從主界面點擊程序圖標時，系統會調用app中被聲明為"launcher" (or "main") activity中的onCreate()方法。這個Activity被用來當作程序的主要進入點。
 
-我们可以在[AndroidManifest.xml](http://developer.android.com/guide/topics/manifest/manifest-intro.html)中定义作为主activity的activity。
+我們可以在[AndroidManifest.xml](http://developer.android.com/guide/topics/manifest/manifest-intro.html)中定義作為主activity的activity。
 
-这个main activity必须在manifest使用包括 `MAIN` action 与 `LAUNCHER` category 的[`<intent-filter>`](http://developer.android.com/guide/topics/manifest/intent-filter-element.html)标签来声明。例如：
+這個main activity必須在manifest使用包括 `MAIN` action 與 `LAUNCHER` category 的[`<intent-filter>`](http://developer.android.com/guide/topics/manifest/intent-filter-element.html)標籤來聲明。例如：
 
 ```xml
 <activity android:name=".MainActivity" android:label="@string/app_name">
@@ -54,17 +54,17 @@
 </activity>
 ```
 
-> **Note**:当你使用Android SDK工具来创建Android工程时，工程中就包含了一个默认的声明有这个filter的activity类。
+> **Note**:當你使用Android SDK工具來創建Android工程時，工程中就包含了一個默認的聲明有這個filter的activity類。
 
-如果程序中没有声明了[MAIN](http://developer.android.com/reference/android/content/Intent.html#ACTION_MAIN) action 或者[LAUNCHER](http://developer.android.com/reference/android/content/Intent.html#CATEGORY_LAUNCHER) category的activity，那么在设备的主界面列表里面不会呈现app图标。
+如果程序中沒有聲明了[MAIN](http://developer.android.com/reference/android/content/Intent.html#ACTION_MAIN) action 或者[LAUNCHER](http://developer.android.com/reference/android/content/Intent.html#CATEGORY_LAUNCHER) category的activity，那麼在設備的主界面列表裡面不會呈現app圖標。
 
-## 创建一个新的实例
+## 創建一個新的實例
 
-大多数app包括多个activity，使用户可以执行不同的动作。不论这个activity是当用户点击应用图标创建的main activtiy还是为了响应用户行为而创建的其他activity，系统都会调用新activity实例中的onCreate()方法。
+大多數app包括多個activity，使用戶可以執行不同的動作。不論這個activity是當用戶點擊應用圖標創建的main activtiy還是為了響應用戶行為而創建的其他activity，系統都會調用新activity實例中的onCreate()方法。
 
-我们必须实现onCreate()方法来执行程序启动所需要的基本逻辑。例如可以在onCreate()方法中定义UI以及实例化类成员变量。
+我們必須實現onCreate()方法來執行程序啟動所需要的基本邏輯。例如可以在onCreate()方法中定義UI以及實例化類成員變量。
 
-例如：下面的onCreate()方法演示了为了建立一个activity所需要的一些基础操作。如声明UI元素，定义成员变量，配置UI等。*(onCreate里面尽量少做事情，避免程序启动太久都看不到界面)*
+例如：下面的onCreate()方法演示了為了建立一個activity所需要的一些基礎操作。如聲明UI元素，定義成員變量，配置UI等。*(onCreate裡面儘量少做事情，避免程序啟動太久都看不到界面)*
 
 ```java
 TextView mTextView; // Member variable for text view in the layout
@@ -90,23 +90,23 @@ public void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-> **Caution**：用[SDK_INT](http://developer.android.com/reference/android/os/Build.VERSION.html#SDK_INT)来避免旧的系统调用了只在Android 2.0（API level 5）或者更新的系统可用的方法（上述if条件中的代码）。旧的系统调用了这些方法会抛出一个运行时异常。
+> **Caution**：用[SDK_INT](http://developer.android.com/reference/android/os/Build.VERSION.html#SDK_INT)來避免舊的系統調用了只在Android 2.0（API level 5）或者更新的系統可用的方法（上述if條件中的代碼）。舊的系統調用了這些方法會拋出一個運行時異常。
 
-一旦onCreate 操作完成，系统会迅速调用onStart() 与onResume()方法。我们的activity不会在Created或者Started状态停留。技术上来说, activity在onStart()被调用后开始被用户可见，但是 onResume()会迅速被执行使得activity停留在Resumed状态，直到一些因素发生变化才会改变这个状态。例如接收到一个来电，用户切换到另外一个activity，或者是设备屏幕关闭。
+一旦onCreate 操作完成，系統會迅速調用onStart() 與onResume()方法。我們的activity不會在Created或者Started狀態停留。技術上來說, activity在onStart()被調用後開始被用戶可見，但是 onResume()會迅速被執行使得activity停留在Resumed狀態，直到一些因素發生變化才會改變這個狀態。例如接收到一個來電，用戶切換到另外一個activity，或者是設備屏幕關閉。
 
-在后面的课程中，我们将看到其他方法是如何使用的，onStart() 与 onResume()在用户从Paused或Stopped状态中恢复的时候非常有用。
+在後面的課程中，我們將看到其他方法是如何使用的，onStart() 與 onResume()在用戶從Paused或Stopped狀態中恢復的時候非常有用。
 
-> **Note:** onCreate() 方法包含了一个参数叫做savedInstanceState，这将会在后面的课程 - [重新创建activity](../../activity-lifecycle/recreating.html)涉及到。
+> **Note:** onCreate() 方法包含了一個參數叫做savedInstanceState，這將會在後面的課程 - [重新創建activity](../../activity-lifecycle/recreating.html)涉及到。
 
 ![basic_lifecycle-create](basic-lifecycle-create.png)
 
-**Figure 2.** 上图显示了onCreate(), onStart() 和 onResume()是如何执行的。当这三个顺序执行的回调函数完成后，activity会到达Resumed状态。
+**Figure 2.** 上圖顯示了onCreate(), onStart() 和 onResume()是如何執行的。當這三個順序執行的回調函數完成後，activity會到達Resumed狀態。
 
-## 销毁Activity
+## 銷毀Activity
 
-activity的第一个生命周期回调函数是 onCreate(),它最后一个回调是<a href="http://developer.android.com/reference/android/app/Activity.html#onDestroy()">onDestroy()</a>.当收到需要将该activity彻底移除的信号时，系统会调用这个方法。
+activity的第一個生命週期回調函數是 onCreate(),它最後一個回調是<a href="http://developer.android.com/reference/android/app/Activity.html#onDestroy()">onDestroy()</a>.當收到需要將該activity徹底移除的信號時，系統會調用這個方法。
 
-大多数 app并不需要实现这个方法，因为局部类的references会随着activity的销毁而销毁，并且我们的activity应该在onPause()与onStop()中执行清除activity资源的操作。然而，如果activity含有在onCreate调用时创建的后台线程，或者是其他有可能导致内存泄漏的资源，则应该在OnDestroy()时进行资源清理，杀死后台线程。
+大多數 app並不需要實現這個方法，因為局部類的references會隨著activity的銷毀而銷毀，並且我們的activity應該在onPause()與onStop()中執行清除activity資源的操作。然而，如果activity含有在onCreate調用時創建的後台線程，或者是其他有可能導致內存洩漏的資源，則應該在OnDestroy()時進行資源清理，殺死後台線程。
 
 ```java
 @Override
@@ -118,4 +118,4 @@ public void onDestroy() {
 }
 ```
 
-> **Note:** 除非程序在onCreate()方法里面就调用了finish()方法，系统通常是在执行了onPause()与onStop() 之后再调用onDestroy() 。在某些情况下，例如我们的activity只是做了一个临时的逻辑跳转的功能，它只是用来决定跳转到哪一个activity，这样的话，需要在onCreate里面调用finish方法，这样系统会直接调用onDestory，跳过生命周期中的其他方法。
+> **Note:** 除非程序在onCreate()方法裡面就調用了finish()方法，系統通常是在執行了onPause()與onStop() 之後再調用onDestroy() 。在某些情況下，例如我們的activity只是做了一個臨時的邏輯跳轉的功能，它只是用來決定跳轉到哪一個activity，這樣的話，需要在onCreate裡面調用finish方法，這樣系統會直接調用onDestory，跳過生命週期中的其他方法。

@@ -1,42 +1,42 @@
-# 创建企业级应用
+# 創建企業級應用
 
-> 编写:[craftsmanBai](https://github.com/craftsmanBai) - <http://z1ng.net> - 原文:<http://developer.android.com/training/enterprise/index.html>
+> 編寫:[craftsmanBai](https://github.com/craftsmanBai) - <http://z1ng.net> - 原文:<http://developer.android.com/training/enterprise/index.html>
 
 ![](work-launcher.png)
 
-Android框架提供安全支持、数据分离、企业环境管理的功能。作为应用开发者，通过适当地处理企业安全和功能限制，你可以让你的应用程序吸引更多的企业客户。也可以修改你的应用使技术管理员可远程配置使用企业资源。
+Android框架提供安全支持、數據分離、企業環境管理的功能。作為應用開發者，通過適當地處理企業安全和功能限制，你可以讓你的應用程序吸引更多的企業客戶。也可以修改你的應用使技術管理員可遠程配置使用企業資源。
 
-为了帮助企业将安卓设备和应用程序进入工作场所，Google通过Android for Work为设备的分配和管理提供了一套API和服务。通过这项计划，企业可以连接到企业移动性管理（EMM）供应商，将Android整合到工作中。
+為了幫助企業將安卓設備和應用程序進入工作場所，Google通過Android for Work為設備的分配和管理提供了一套API和服務。通過這項計劃，企業可以連接到企業移動性管理（EMM）供應商，將Android整合到工作中。
 
-通过下面的链接获取，可以了解更多关于如何更新您的Android应用程序来支持企业环境或建立企业解决方案的信息。
+通過下面的連結獲取，可以瞭解更多關於如何更新您的Android應用程序來支持企業環境或建立企業解決方案的信息。
 
 
-## 企业级应用开发
+## 企業級應用開發
 
-了解在企业环境中如何使您的应用程序运行顺畅，限制设备的功能和数据访问。通过加入限制进一步支持企业使用你的app，让管理员可以远程配置使用你的应用程序：
+瞭解在企業環境中如何使您的應用程序運行順暢，限制設備的功能和數據訪問。通過加入限制進一步支持企業使用你的app，讓管理員可以遠程配置使用你的應用程序：
 
-确保与管理兼容：
+確保與管理兼容：
 
 [http://developer.android.com/training/enterprise/app-compatibility.html](http://developer.android.com/training/enterprise/app-compatibility.html
 )
 
-加入应用限制：
+加入應用限制：
 
 [http://developer.android.com/training/enterprise/app-restrictions.html](http://developer.android.com/training/enterprise/app-restrictions.html)
 
-应用限制计划：
+應用限制計劃：
 
 [http://developer.android.com/samples/AppRestrictionSchema/index.html](http://developer.android.com/samples/AppRestrictionSchema/index.html)
 
 
-应用限制执行者：
+應用限制執行者：
 
 
 [http://developer.android.com/samples/AppRestrictionEnforcer/index.html](http://developer.android.com/samples/AppRestrictionEnforcer/index.html)
 
-## 设备与应用管理
+## 設備與應用管理
 
-学习如何为应用程序建立策略控制器，使企业的技术管理人员来管理设备，管理企业应用程序，并提供访问公司资源的权限：
+學習如何為應用程序建立策略控制器，使企業的技術管理人員來管理設備，管理企業應用程序，並提供訪問公司資源的權限：
 
 建立工作策略控制：
 

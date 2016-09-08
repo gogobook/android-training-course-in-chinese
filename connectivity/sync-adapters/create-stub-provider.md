@@ -1,18 +1,18 @@
-# 创建 Stub Content Provider
+# 創建 Stub Content Provider
 
-> 编写:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/creating-stub-provider.html>
+> 編寫:[jdneo](https://github.com/jdneo) - 原文:<http://developer.android.com/training/sync-adapters/creating-stub-provider.html>
 
-Sync Adapter 框架是设计成用来和设备数据一起工作的，而这些设备数据应该被灵活且安全的 Content Provider 框架管理。因此，Sync Adapter 框架会期望应用已经为它的本地数据定义了 Content Provider。如果 Sync Adapter 框架尝试去运行我们的 Sync Adapter，而我们的应用没有一个 Content Provider 的话，那么 Sync Adapter 将会崩溃。
+Sync Adapter 框架是設計成用來和設備數據一起工作的，而這些設備數據應該被靈活且安全的 Content Provider 框架管理。因此，Sync Adapter 框架會期望應用已經為它的本地數據定義了 Content Provider。如果 Sync Adapter 框架嘗試去運行我們的 Sync Adapter，而我們的應用沒有一個 Content Provider 的話，那麼 Sync Adapter 將會崩潰。
 
-如果我们正在开发一个新的应用，它将数据从服务器传输到一台设备上，那么我们务必考虑将本地数据存储于 Content Provider 中。除了它对于 Sync Adapter 的重要性之外，Content Provider 还可以提供许多安全上的好处，更何况它是专门为了在 Android 设备上处理数据存储而设计的。要学习如何创建一个 Content Provider，可以阅读：[Creating a Content Provider](http://developer.android.com/guide/topics/providers/content-provider-creating.html)。
+如果我們正在開發一個新的應用，它將數據從服務器傳輸到一台設備上，那麼我們務必考慮將本地數據存儲於 Content Provider 中。除了它對於 Sync Adapter 的重要性之外，Content Provider 還可以提供許多安全上的好處，更何況它是專門為了在 Android 設備上處理數據存儲而設計的。要學習如何創建一個 Content Provider，可以閱讀：[Creating a Content Provider](http://developer.android.com/guide/topics/providers/content-provider-creating.html)。
 
-然而，如果我们已经通过别的形式来存储本地数据，我们仍然可以使用 Sync Adapter 来处理数据传输。为了满足 Sync Adapter 框架对于 Content Provider 的要求，我们可以在应用中添加一个 Stub Content Provider。一个 Stub Content Provider 实现了 Content Provider 类，但是所有的方法都返回 `null` 或者 `0`。如果我们添加了一个 Stub Content Provider，那么无论数据存储机制是什么，我们都可以使用 Sync Adapter 来传输数据。
+然而，如果我們已經通過別的形式來存儲本地數據，我們仍然可以使用 Sync Adapter 來處理數據傳輸。為了滿足 Sync Adapter 框架對於 Content Provider 的要求，我們可以在應用中添加一個 Stub Content Provider。一個 Stub Content Provider 實現了 Content Provider 類，但是所有的方法都返回 `null` 或者 `0`。如果我們添加了一個 Stub Content Provider，那麼無論數據存儲機制是什麼，我們都可以使用 Sync Adapter 來傳輸數據。
 
-如果在我们的应用中已经有了一个 Content Provider，那么我们就不需要创建 Stub Content Provider 了。在这种情况下，我们可以略过这节课程，直接进入：[创建 Sync Adapter](create-sync-adapter.html)。如果你还没有创建 Content Provider，这节课将向你展示如何通过添加一个 Stub Content Provider，将你的 Sync Adapter 添加到框架中。
+如果在我們的應用中已經有了一個 Content Provider，那麼我們就不需要創建 Stub Content Provider 了。在這種情況下，我們可以略過這節課程，直接進入：[創建 Sync Adapter](create-sync-adapter.html)。如果你還沒有創建 Content Provider，這節課將向你展示如何通過添加一個 Stub Content Provider，將你的 Sync Adapter 添加到框架中。
 
-## 添加一个 Stub Content Provider
+## 添加一個 Stub Content Provider
 
-要为我们的应用创建一个 Stub Content Provider，首先继承 [ContentProvider](http://developer.android.com/reference/android/content/ContentProvider.html) 类，并且在所有需要重写的方法中，我们一律不进行任何处理而是直接返回。下面的代码片段展示了我们应该如何创建一个 Stub Content Provider：
+要為我們的應用創建一個 Stub Content Provider，首先繼承 [ContentProvider](http://developer.android.com/reference/android/content/ContentProvider.html) 類，並且在所有需要重寫的方法中，我們一律不進行任何處理而是直接返回。下面的代碼片段展示了我們應該如何創建一個 Stub Content Provider：
 
 ```java
 /*
@@ -75,27 +75,27 @@ public class StubProvider extends ContentProvider {
 }
 ```
 
-## 在 Manifest 清单文件中声明 Provider
+## 在 Manifest 清單文件中聲明 Provider
 
-Sync Adapter 框架会通过查看应用的 manifest 文件中是否声明了 provider，来验证我们的应用是否使用了 Content Provider。为了在 manifest 清单文件中声明我们的 Stub Content Provider，添加一个 [`<provider>`](http://developer.android.com/guide/topics/manifest/provider-element.html) 标签，并让它拥有下列属性字段：
+Sync Adapter 框架會通過查看應用的 manifest 文件中是否聲明了 provider，來驗證我們的應用是否使用了 Content Provider。為了在 manifest 清單文件中聲明我們的 Stub Content Provider，添加一個 [`<provider>`](http://developer.android.com/guide/topics/manifest/provider-element.html) 標籤，並讓它擁有下列屬性字段：
 
 `android:name="com.example.android.datasync.provider.StubProvider"`
 
-  指定实现 Stub Content Provider 类的完整包名。
+  指定實現 Stub Content Provider 類的完整包名。
 
 `android:authorities="com.example.android.datasync.provider"`
 
-  指定 Stub Content Provider 的 URI Authority。用应用的包名加上字符串 `".provider"` 作为该属性字段的值。虽然我们在这里向系统声明了 Stub Content Provider，但是不会尝试访问 Provider 本身。
+  指定 Stub Content Provider 的 URI Authority。用應用的包名加上字符串 `".provider"` 作為該屬性字段的值。雖然我們在這裡向系統聲明了 Stub Content Provider，但是不會嘗試訪問 Provider 本身。
 
 `android:exported="false"`
 
-  确定其它应用是否可以访问 Content Provider。对于 Stub Content Provider 而言，由于没有让其它应用访问该 Provider 的必要，所以我们将该值设置为 `false`。该值并不会影响 Sync Adapter 框架和 Content Provider 之间的交互。
+  確定其它應用是否可以訪問 Content Provider。對於 Stub Content Provider 而言，由於沒有讓其它應用訪問該 Provider 的必要，所以我們將該值設置為 `false`。該值並不會影響 Sync Adapter 框架和 Content Provider 之間的交互。
 
 `android:syncable="true"`
 
-  该标识指明 Provider 是可同步的。如果将这个值设置为 `true`，那么将不需要在代码中调用 <a href="http://developer.android.com/reference/android/content/ContentResolver.html#setIsSyncable(android.accounts.Account, java.lang.String, int)">setIsSyncable()</a>。这一标识将会允许 Sync Adapter 框架和 Content Provider 进行数据传输，但是仅仅在我们显式地执行相关调用时，这一传输时才会进行。
+  該標識指明 Provider 是可同步的。如果將這個值設置為 `true`，那麼將不需要在代碼中調用 <a href="http://developer.android.com/reference/android/content/ContentResolver.html#setIsSyncable(android.accounts.Account, java.lang.String, int)">setIsSyncable()</a>。這一標識將會允許 Sync Adapter 框架和 Content Provider 進行數據傳輸，但是僅僅在我們顯式地執行相關調用時，這一傳輸時才會進行。
 
-下面的代码片段展示了我们应该如何将 [`<provider>`](http://developer.android.com/guide/topics/manifest/provider-element.html) 标签添加到应用的 manifest 清单文件中：
+下面的代碼片段展示了我們應該如何將 [`<provider>`](http://developer.android.com/guide/topics/manifest/provider-element.html) 標籤添加到應用的 manifest 清單文件中：
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -118,4 +118,4 @@ Sync Adapter 框架会通过查看应用的 manifest 文件中是否声明了 pr
 </manifest>
 ```
 
-现在我们已经创建了所有 Sync Adapter 框架所需要的依赖项，接下来我们可以创建封装数据传输代码的组件了。该组件就叫做 Sync Adapter。在下节课中，我们将会展示如何将这一组件添加到应用中。
+現在我們已經創建了所有 Sync Adapter 框架所需要的依賴項，接下來我們可以創建封裝數據傳輸代碼的組件了。該組件就叫做 Sync Adapter。在下節課中，我們將會展示如何將這一組件添加到應用中。

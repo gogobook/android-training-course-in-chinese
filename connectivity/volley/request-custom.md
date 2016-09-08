@@ -1,21 +1,21 @@
-# 实现自定义的网络请求
+# 實現自定義的網絡請求
 
-> 编写:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/volley/request-custom.html>
+> 編寫:[kesenhoo](https://github.com/kesenhoo) - 原文:<http://developer.android.com/training/volley/request-custom.html>
 
-这节课会介绍如何实现自定义的请求类型，这些自定义的类型不属于 Volley 内置支持包里面。
+這節課會介紹如何實現自定義的請求類型，這些自定義的類型不屬於 Volley 內置支持包裡面。
 
-## 编写一个自定义请求
+## 編寫一個自定義請求
 
-大多数的请求类型都已经包含在 Volley 的工具箱里面。如果我们的请求返回数值是一个 string，image 或者 JSON，那么是不需要自己去实现请求类的。
+大多數的請求類型都已經包含在 Volley 的工具箱裡面。如果我們的請求返回數值是一個 string，image 或者 JSON，那麼是不需要自己去實現請求類的。
 
-对于那些需要自定义的请求类型，我们需要执行以下操作：
+對於那些需要自定義的請求類型，我們需要執行以下操作：
 
-* 继承 `Request<T>` 类，`<T>` 表示解析过的响应请求预期的数据类型。因此如果我们需要解析的响应类型是一个 String，可以通过继承 `Request<String>` 来创建自定义的请求。请参考 Volley 工具类中的 `StringRequest` 与 `ImageRequest` 来学习如何继承 `Request<T>`。
-* 实现抽象方法 `parseNetworkResponse()` 与 ` deliverResponse()`，下面会详细介绍。
+* 繼承 `Request<T>` 類，`<T>` 表示解析過的響應請求預期的數據類型。因此如果我們需要解析的響應類型是一個 String，可以通過繼承 `Request<String>` 來創建自定義的請求。請參考 Volley 工具類中的 `StringRequest` 與 `ImageRequest` 來學習如何繼承 `Request<T>`。
+* 實現抽象方法 `parseNetworkResponse()` 與 ` deliverResponse()`，下面會詳細介紹。
 
 ### parseNetworkResponse
 
-一个 `Response` 封装了用于发送的给定类型（例如，string、image、JSON等）解析过的响应。下面会演示如何实现 `parseNetworkResponse()`：
+一個 `Response` 封裝了用於發送的給定類型（例如，string、image、JSON等）解析過的響應。下面會演示如何實現 `parseNetworkResponse()`：
 
 ```java
 @Override
@@ -32,23 +32,23 @@ protected Response<T> parseNetworkResponse(
 }
 ```
 
-请注意：
+請注意：
 
-* `parseNetworkResponse()` 的参数是类型是 `NetworkResponse`，这种参数以 byte[]、HTTP status code 以及 response headers 的形式包含响应负载。
-* 我们实现的方法必须返回一个 `Response<T>`，它包含了我们指定类型的响应对象与缓存 metadata 或者是一个错误。
+* `parseNetworkResponse()` 的參數是類型是 `NetworkResponse`，這種參數以 byte[]、HTTP status code 以及 response headers 的形式包含響應負載。
+* 我們實現的方法必須返回一個 `Response<T>`，它包含了我們指定類型的響應物件與緩存 metadata 或者是一個錯誤。
 
-如果我们的协议没有标准的缓存机制，那么我们可以自己建立一个 `Cache.Entry`, 但是大多数请求都可以用下面的方式来处理:
+如果我們的協議沒有標準的緩存機制，那麼我們可以自己建立一個 `Cache.Entry`, 但是大多數請求都可以用下面的方式來處理:
 
 ```java
 return Response.success(myDecodedObject,
         HttpHeaderParser.parseCacheHeaders(response));
 ```
 
-Volley 在工作线程中执行 `parseNetworkResponse()` 方法。这确保了耗时的解析操作，例如 decode 一张 JPEG 图片成 bitmap，不会阻塞 UI 线程。
+Volley 在工作線程中執行 `parseNetworkResponse()` 方法。這確保了耗時的解析操作，例如 decode 一張 JPEG 圖片成 bitmap，不會阻塞 UI 線程。
 
 ### deliverResponse
 
-Volley 会把 `parseNetworkResponse()` 方法返回的数据带到主线程的回调中。如下所示：
+Volley 會把 `parseNetworkResponse()` 方法返回的數據帶到主線程的回調中。如下所示：
 
 ```java
 protected void deliverResponse(T response) {
@@ -57,7 +57,7 @@ protected void deliverResponse(T response) {
 
 ### Example: GsonRequest
 
-[Gson](http://code.google.com/p/google-gson/) 是一个使用映射支持 JSON 与 Java 对象之间相互转换的库文件。我们可以定义与 JSON keys 相对应名称的 Java 对象。把对象传递给 Gson，然后 Gson 会帮我们为对象填充字段值。下面是一个完整的示例：演示了使用 Gson 解析 Volley 数据：
+[Gson](http://code.google.com/p/google-gson/) 是一個使用映射支持 JSON 與 Java 物件之間相互轉換的庫文件。我們可以定義與 JSON keys 相對應名稱的 Java 物件。把物件傳遞給 Gson，然後 Gson 會幫我們為物件填充字段值。下面是一個完整的示例：演示了使用 Gson 解析 Volley 數據：
 
 ```java
 public class GsonRequest<T> extends Request<T> {
@@ -109,4 +109,4 @@ public class GsonRequest<T> extends Request<T> {
 }
 ```
 
-如果你愿意使用的话，Volley 提供了现成的 `JsonArrayRequest` 与 ` JsonArrayObject`类。参考上一课[创建标准的网络请求](request.html)。
+如果你願意使用的話，Volley 提供了現成的 `JsonArrayRequest` 與 ` JsonArrayObject`類。參考上一課[創建標準的網絡請求](request.html)。
